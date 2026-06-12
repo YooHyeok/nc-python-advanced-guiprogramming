@@ -58,6 +58,103 @@ root.mainloop()
 <hr>
 <br>
 
+# 예제 2) 버튼 위젯
+
+위젯이란 버튼이나 체크박스나 혹은 글자를 입력할 수 있는 텍스트상자 같은 것들을 말한다.  
+
+## 목차
+A) 버튼 인스턴스 생성.  
+  1. 텍스트 타입 버튼 정의
+  2. 버튼 크기 조정
+      - 버튼 내부 좌우 여백(픽셀) : padx, pady
+      - 너비/높이 : width, height
+  3. 버튼 색상 조정
+  4. 이미지 타입 버튼
+  5. 버튼 동작 - 함수 정의 및 연동
+B) 버튼 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](image-1.png)
+
+## A/B)기본 버튼 출력
+
+버튼을 구성하기 위해서는 먼저 버튼 클래스를 통해 버튼 인스턴스를 생성하고, 해당 인스턴스로 부터 pack() 함수를 호출하여 최종적으로 버튼을 배치해야 출력된다.  
+출력될 타입은 대표적으로 text 타입과 image 타입이 있다.  
+먼저 아래와 같이 기본 텍스트 타입으로 버튼을 정의하고, 출력해보도록 한다.  
+### 1. 텍스트 타입 버튼 정의
+  ```py
+  # 생략
+  btn = Button(root, text="버튼")
+  btn.pack()
+  # 생략
+  ```
+
+### 2. 버튼 크기 조정
+버튼 크기는 픽셀단위로 버튼 내부에서 좌우 여백을 지정하는 padx, pady 방식과,  
+일반적인 너비, 높이를 지정하는 width, height 방식이 있다.  
+- padx, pady: 버튼 내부 내용물 기준으로 버튼까지의 여백을 말하며, padx는 좌우여백, pady는 상하여백을 가리킨다.  
+  ```py
+  # 생략
+  btn = Button(root, padx=5, pady=10, text="버튼")
+  btn.pack()
+  # 생략
+  ```
+  여백의 크기이므로, 버튼 내용물의 크기가 커질수록 버튼 크기는 동적으로 변경된다.  
+- width, height
+  ```py
+  # 생략
+  btn = Button(root, width=10, height=3, text="버튼")
+  btn.pack()
+  # 생략
+  ```
+  padx,pady와는 다르게 width, hegiht는 고정 크기이므로, 버튼 내용물이 커지면, 내용물이 잘려서 출력된다.  
+  ```py
+  btn = Button(root, width=10, height=3, text="버튼44444444444444444444444")
+  btn.pack()
+  ```
+
+### 3. 버튼 색상 조정
+버튼 색상의 fg는 foreground의 약자로, 글자색을. bg는 background의 약자로 배경색을 의미한다.
+Button 인스턴스 생성시 매개변수로 전달하며 영문 텍스트로 색상을 정의한다.
+```py
+# 생략
+btn = Button(root, fg="red", bg="yellow", text="버튼5")
+btn.pack()
+# 생략
+```
+
+### 4. 이미지 타입 버튼
+PhotoImnage 클래스의 file 키워드에 이미지 경로를 전달하여 PhotoImange 인스턴스를 생성한 후,   
+Button 클래스의 image 키워드에 해당 인스턴스를 전달하여 Button 인스턴스를 생성한다.  
+```py
+# 생략
+photo = PhotoImage(file="gui_basic/img/check.png")
+btn = Button(root, image=photo)
+btn.pack()
+# 생략
+```
+
+### 5. 버튼 동작 - 함수 정의 및 연동
+일반적인 함수를 정의한 후, Button 클래스의 command 키워드에 해당 함수를 전달하여 Button 인스턴스를 생성한다.  
+```py
+# 생략
+def btncmd():
+  print("버튼이 클릭되었어요")
+btn = Button(root, text="동작하는 버튼", command=btncmd)
+btn.pack()
+# 생략
+```
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
