@@ -81,7 +81,7 @@ B) 버튼 배치
 
 ![alt text](image-1.png)
 
-## A/B)기본 버튼 출력
+## A/B) 기본 버튼 출력
 
 버튼을 구성하기 위해서는 먼저 버튼 클래스를 통해 버튼 인스턴스를 생성하고, 해당 인스턴스로 부터 pack() 함수를 호출하여 최종적으로 버튼을 배치해야 출력된다.  
 출력될 타입은 대표적으로 text 타입과 image 타입이 있다.  
@@ -149,6 +149,60 @@ btn = Button(root, text="동작하는 버튼", command=btncmd)
 btn.pack()
 # 생략
 ```
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 3) 레이블 위젯
+## 목차
+
+A) 레이블 인스턴스 생성.  
+  1. 텍스트 타입 레이블  
+  2. 이미지 타입 레이블  
+  3. 레이블 동적 업데이트 - 버튼 클릭시 레이블  
+B) 레이블 배치
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+글자 혹은 이미지를 출력해주는 역할을 하며, 실제로 어떤 동작을 넣지는 못한다.  
+
+## A/B) 기본 레이블 출력
+
+버튼 구성과 동일하게 레이블 클래스를 통해 레이블 인스턴스를 생성하고, 해당 인스턴스로 부터 pack() 함수를 호출하여 최종적으로 레이블을 배치해야 출력된다.  
+출력될 타입은 대표적으로 text 타입과 image 타입이 있다.  
+1. 텍스트 타입 레이블
+  ```py
+  label1 = Label(root, text="안녕하세요")
+  label1.pack()
+  ```
+2. 이미지 타입 레이블  
+  ```py
+  photo = PhotoImage(file="gui_basic/img/check.png")
+  label2 = Label(root, image=photo)
+  label2.pack()
+  ```
+3. 레이블 동적 업데이트
+  이미 생성된 레이블은 프로그램 실행중 config 함수를 통해 동적으로 텍스트 혹은 이미지를 변경할 수 있다.  
+  ```py
+  # 레이블 동적 업데이트 : 버튼 클릭시 텍스트 변경
+  def change():
+    label1.config(text="또 만나요")
+    global photo2
+    photo2 = PhotoImage(file="gui_basic/img/x.png")
+    label2.config(image=photo2)
+  btn = Button(root, text="클릭", command=change)
+  btn.pack()
+  ```
+  이때 유의할 점은 내부에서 생성한 이미지 변수는 global 변수로 선언해야한다.  
+  파이썬 함수 안에서 대입한 변수는 기본적으로 지역 변수다.  
+  지역 변수는 함수가 끝나면 이름이 사라진다.  
+  PhotoImage는 참조가 유지되지 않으면 이미지가 사라질 수 있다.  
+  그래서 global 또는 label2.image 같은 방식으로 참조를 유지해야 한다.
 
 </details>
 <br>
