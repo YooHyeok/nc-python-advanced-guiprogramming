@@ -209,6 +209,84 @@ B) 레이블 배치
 <hr>
 <br>
 
+# 예제 4) 텍스트, 엔트리 위젯
+## 목차
+
+A) 텍스트, 엔트리 인스턴스 생성.  
+  1. Text 위젯  
+  2. Entry 위젯  
+  3. 기본값 입력  
+  4. 입력값 출력  
+  5. 입력값 삭제  
+B) 텍스트, 엔트리 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+Text 위젯과 Entry 위젯은 사용자로부터 글자를 입력받기 위해 사용한다.  
+Text 위젯은 여러 줄 입력이 가능하고, Entry 위젯은 한 줄 입력만 가능하다.  
+
+## A/B) 기본 텍스트, 엔트리 출력
+
+버튼, 레이블 구성과 동일하게 Text, Entry 클래스를 통해 각각 인스턴스를 생성하고, 해당 인스턴스로 부터 pack() 함수를 호출하여 최종적으로 위젯을 배치해야 출력된다.  
+1. Text 위젯
+  ```py
+  txt = Text(root, width=30, height=5)
+  txt.pack()
+  ```
+  Text 위젯은 여러 줄의 글자를 입력받을 수 있다.  
+  width는 너비, height는 높이를 의미한다.  
+2. Entry 위젯
+  ```py
+  e = Entry(root, width=30)
+  e.pack()
+  ```
+  Entry 위젯은 한 줄의 글자를 입력받을 수 있다.  
+  비밀번호, 아이디, 검색어처럼 한 줄 입력이 필요한 경우 사용할 수 있다.  
+3. 기본값 입력
+  insert 함수를 통해 Text, Entry 위젯에 기본값을 입력할 수 있다.  
+  ```py
+  txt.insert(END, "글자를 입력하세요")
+  e.insert(0, "한 줄만 입력해요")
+  ```
+  Text 위젯에서 END는 텍스트의 마지막 위치를 의미한다.  
+  Entry 위젯에서 0은 글자가 입력될 인덱스 위치를 의미한다.  
+4. 입력값 출력
+  get 함수를 통해 Text, Entry 위젯에 입력된 값을 가져올 수 있다.  
+  ```py
+  ## Text 읽기
+  btn1 = Button(root, text="Text 출력", command=lambda: print(txt.get("1.0", END)))
+  btn1.pack()
+
+  ## Entry 읽기
+  btn2 = Button(root, text="Entry 출력", command=lambda: print(e.get()))
+  btn2.pack()
+  ```
+  Text 위젯의 get 함수는 시작 위치와 끝 위치를 전달해야 한다.  
+  "1.0"은 1번째 줄의 0번째 글자 위치를 의미하고, END는 마지막 위치를 의미한다.  
+  Entry 위젯은 한 줄 입력이므로 get 함수에 별도의 위치를 전달하지 않아도 된다.  
+5. 입력값 삭제
+  delete 함수를 통해 Text, Entry 위젯에 입력된 값을 삭제할 수 있다.  
+  ```py
+  def btncmd(): 
+    txt.delete("1.0", END)
+    e.delete(0, END)
+
+  btn3 = Button(root, text="모두 삭제", command=btncmd)
+  btn3.pack()
+  ```
+  Text 위젯은 삭제할 시작 위치와 끝 위치를 전달해야 한다.  
+  Entry 위젯도 삭제할 시작 인덱스와 끝 위치를 전달한다.  
+  여기서는 각각 처음부터 끝까지 삭제하기 위해 "1.0", 0, END를 사용한다.
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
