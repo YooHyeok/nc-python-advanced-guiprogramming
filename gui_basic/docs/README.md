@@ -169,6 +169,8 @@ B) 레이블 배치
 <summary>접기/펼치기</summary>
 <br>
 
+![alt text](label-widget.gif)
+
 글자 혹은 이미지를 출력해주는 역할을 하며, 실제로 어떤 동작을 넣지는 못한다.  
 
 ## A/B) 기본 레이블 출력
@@ -225,6 +227,8 @@ B) 텍스트, 엔트리 배치
 <details>
 <summary>접기/펼치기</summary>
 <br>
+
+![alt text](text&entry-widget.gif)
 
 Text 위젯과 Entry 위젯은 사용자로부터 글자를 입력받기 위해 사용한다.  
 Text 위젯은 여러 줄 입력이 가능하고, Entry 위젯은 한 줄 입력만 가능하다.  
@@ -287,9 +291,17 @@ Text 위젯은 여러 줄 입력이 가능하고, Entry 위젯은 한 줄 입력
 <hr>
 <br>
 
-# 예제 ) 
+# 예제 5) 리스트박스 위젯
 ## 목차
 
+A) 리스트박스 인스턴스 생성.  
+  1. Listbox 위젯  
+  2. 항목 추가  
+  3. 항목 삭제  
+  4. 항목 개수 확인  
+  5. 항목 조회  
+  6. 선택된 항목 확인  
+B) 리스트박스 배치
 
 
 <br>
@@ -297,6 +309,80 @@ Text 위젯은 여러 줄 입력이 가능하고, Entry 위젯은 한 줄 입력
 <summary>접기/펼치기</summary>
 <br>
 
+![alt text](listbox-widget.gif)
+
+Listbox 위젯은 여러 가지 값을 목록 형태로 관리하고, 사용자가 목록 중 하나 또는 여러 개를 선택할 수 있게 해준다.  
+
+## A/B) 기본 리스트박스 출력
+
+버튼, 레이블 구성과 동일하게 Listbox 클래스를 통해 리스트박스 인스턴스를 생성하고, 해당 인스턴스로 부터 pack() 함수를 호출하여 최종적으로 위젯을 배치해야 출력된다.  
+1. Listbox 위젯
+  ```py
+  listbox = Listbox(root, selectmode="extended", height=0)
+  listbox.pack()
+  ```
+  selectmode는 목록 선택 방식을 의미한다.  
+  "extended"는 여러 개 선택이 가능하고, "single"은 하나만 선택할 수 있다.  
+  height는 목록의 높이를 의미한다.  
+  height가 0이면 등록된 모든 목록을 출력한다.  
+2. 항목 추가
+  insert 함수를 통해 리스트박스에 항목을 추가할 수 있다.  
+  ```py
+  listbox.insert(0, "사과")
+  listbox.insert(1, "딸기")
+  listbox.insert(2, "바나나")
+  listbox.insert(END, "수박")
+  listbox.insert(END, "포도")
+  ```
+  첫 번째 매개변수는 항목이 들어갈 위치를 의미하고, 두 번째 매개변수는 추가할 값을 의미한다.  
+  END를 사용하면 가장 마지막 위치에 항목을 추가한다.  
+3. 항목 삭제
+  delete 함수를 통해 리스트박스의 항목을 삭제할 수 있다.  
+  ```py
+  listbox.delete(END)
+  listbox.delete(0)
+  ```
+  END는 가장 마지막 항목을 의미한다.  
+  0은 가장 첫 번째 항목을 의미한다.  
+4. 항목 개수 확인
+  size 함수를 통해 리스트박스에 들어있는 항목의 개수를 확인할 수 있다.  
+  ```py
+  print("리스트에는 ", listbox.size(), "개가 있어요.")
+  ```
+5. 항목 조회
+  get 함수를 통해 리스트박스의 항목을 가져올 수 있다.  
+  ```py
+  print("1번째부터 3번째까지의 항목 : ", listbox.get(0, 2))
+  ```
+  get 함수에 시작 위치와 끝 위치를 전달하면 해당 범위의 항목을 가져올 수 있다.  
+  여기서 0은 첫 번째 항목, 2는 세 번째 항목을 의미한다.  
+6. 선택된 항목 확인
+  curselection 함수를 통해 현재 선택된 항목의 위치를 확인할 수 있다.  
+  ```py
+  print("선택된 항목 : ", listbox.curselection())
+  ```
+  curselection 함수는 선택된 항목의 값을 직접 가져오는 것이 아니라, 선택된 항목의 인덱스를 반환한다.  
+  선택된 값을 가져오고 싶다면 반환된 인덱스를 get 함수에 전달하면 된다.  
+  ```py
+  for index in listbox.curselection():
+    print(listbox.get(index))
+  ```
+
+## 버튼 클릭으로 리스트박스 조작
+
+버튼의 command 키워드에 함수를 연결하면 버튼 클릭으로 리스트박스를 조작할 수 있다.  
+```py
+def btncmd():
+  listbox.delete(END)
+  listbox.delete(0)
+
+  print("리스트에는 ", listbox.size(), "개가 있어요.")
+  print("1번째부터 3번째까지의 항목 : ", listbox.get(0, 2))
+  print("선택된 항목 : ", listbox.curselection())
+
+btn = Button(root, text="클릭", command=btncmd)
+btn.pack()
+```
 
 </details>
 <br>
