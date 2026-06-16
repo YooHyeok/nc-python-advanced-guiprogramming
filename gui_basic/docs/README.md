@@ -388,3 +388,103 @@ btn.pack()
 <br>
 <hr>
 <br>
+
+# 예제 6) 체크버튼 위젯
+## 목차
+
+A) 체크버튼 인스턴스 생성.  
+  1. IntVar 생성  
+  2. Checkbutton 위젯  
+  3. 체크 상태 설정  
+  4. 체크 여부 확인  
+B) 체크버튼 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](checkbox-widget.gif)
+
+Checkbutton 위젯은 사용자가 항목을 체크하거나 체크 해제할 수 있게 해준다.  
+약관 동의, 옵션 선택, 다시 보지 않기 같은 값을 처리할 때 사용할 수 있다.  
+
+## A/B) 기본 체크버튼 출력
+
+버튼, 레이블 구성과 동일하게 Checkbutton 클래스를 통해 체크버튼 인스턴스를 생성하고, 해당 인스턴스로 부터 pack() 함수를 호출하여 최종적으로 위젯을 배치해야 출력된다.  
+체크 여부는 IntVar 같은 변수 객체를 연결해서 확인할 수 있다.  
+1. IntVar 생성
+  ```py
+  chkvar = IntVar()
+  ```
+  IntVar는 정수 값을 관리하는 Tkinter 변수이다.  
+  체크버튼과 연결하면 체크 여부를 0 또는 1로 확인할 수 있다.  
+  0은 체크 해제, 1은 체크 상태를 의미한다.  
+2. Checkbutton 위젯
+  ```py
+  checkbox = Checkbutton(root, text="오늘 하루 보지 않기", variable=chkvar)
+  checkbox.pack()
+  ```
+  text는 체크버튼에 출력될 글자를 의미한다.  
+  variable에는 체크 여부를 저장할 Tkinter 변수를 전달한다.  
+3. 체크 상태 설정
+  select 함수와 deselect 함수를 통해 체크 상태를 직접 설정할 수 있다.  
+  ```py
+  checkbox.select()
+  checkbox.deselect()
+  ```
+  select 함수는 체크 상태로 만들고, deselect 함수는 체크 해제 상태로 만든다.  
+4. 체크 여부 확인
+  get 함수를 통해 현재 체크 여부를 확인할 수 있다.  
+  ```py
+  def btncmd():
+    print(chkvar.get())
+  ```
+  chkvar.get()의 결과가 0이면 체크 해제, 1이면 체크 상태이다.  
+
+## 여러 체크버튼 사용
+
+체크버튼을 여러 개 사용할 경우 각각의 체크버튼마다 별도의 Tkinter 변수를 연결한다.  
+```py
+chkvar = IntVar()
+checkbox = Checkbutton(root, text="오늘 하루 보지 않기", variable=chkvar)
+checkbox.pack()
+
+chkvar2 = IntVar()
+checkbox2 = Checkbutton(root, text="일주일동안 보지 않기", variable=chkvar2)
+checkbox2.pack()
+```
+각 체크버튼은 서로 독립적으로 체크 상태를 가진다.  
+
+## 버튼 클릭으로 체크 여부 확인
+
+버튼의 command 키워드에 함수를 연결하면 버튼 클릭시 체크 여부를 확인할 수 있다.  
+```py
+def btncmd():
+  print(chkvar.get())
+  print(chkvar2.get())
+
+btn = Button(root, text="클릭", command=btncmd)
+btn.pack()
+```
+
+</details>
+<br>
+<hr>
+<br>
+# 예제 ) 
+## 목차
+
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+
+</details>
+<br>
+<hr>
+<br>
