@@ -473,6 +473,112 @@ btn.pack()
 <br>
 <hr>
 <br>
+# 예제 7) 라디오버튼 위젯
+## 목차
+
+A) 라디오버튼 인스턴스 생성.  
+  1. IntVar 생성  
+  2. Radiobutton 위젯  
+  3. 기본 선택 설정  
+  4. StringVar 사용  
+  5. 선택된 값 확인  
+B) 라디오버튼 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+Radiobutton 위젯은 여러 항목 중 하나만 선택할 수 있게 해준다.  
+체크버튼은 여러 개를 동시에 선택할 수 있지만, 라디오버튼은 같은 변수로 묶인 항목 중 하나만 선택된다.  
+
+## A/B) 기본 라디오버튼 출력
+
+버튼, 체크버튼 구성과 동일하게 Radiobutton 클래스를 통해 라디오버튼 인스턴스를 생성하고, 해당 인스턴스로 부터 pack() 함수를 호출하여 최종적으로 위젯을 배치해야 출력된다.  
+라디오버튼은 같은 Tkinter 변수를 공유하는 항목끼리 하나의 그룹으로 묶인다.  
+1. IntVar 생성
+  ```py
+  burger_var = IntVar()
+  ```
+  IntVar는 정수 값을 관리하는 Tkinter 변수이다.  
+  라디오버튼과 연결하면 선택된 항목의 value 값을 정수로 확인할 수 있다.  
+2. Radiobutton 위젯
+  ```py
+  btn_burger1 = Radiobutton(root, text="햄버거", value=1, variable=burger_var)
+  btn_burger2 = Radiobutton(root, text="치즈버거", value=2, variable=burger_var)
+  btn_burger3 = Radiobutton(root, text="치킨버거", value=3, variable=burger_var)
+
+  btn_burger1.pack()
+  btn_burger2.pack()
+  btn_burger3.pack()
+  ```
+  text는 라디오버튼에 출력될 글자를 의미한다.  
+  value는 해당 항목이 선택되었을 때 변수에 저장될 값을 의미한다.  
+  variable에는 선택값을 저장할 Tkinter 변수를 전달한다.  
+  같은 variable을 사용하는 라디오버튼끼리는 하나의 그룹이 된다.  
+3. 기본 선택 설정
+  select 함수를 통해 기본으로 선택될 라디오버튼을 지정할 수 있다.  
+  ```py
+  btn_burger1.select()
+  ```
+  위 코드는 햄버거 항목을 기본 선택 상태로 만든다.  
+4. StringVar 사용
+  라디오버튼의 value를 문자열로 관리하고 싶다면 StringVar를 사용할 수 있다.  
+  ```py
+  drink_var = StringVar()
+  btn_drink1 = Radiobutton(root, text="콜라", value="콜라", variable=drink_var)
+  btn_drink1.select()
+  btn_drink2 = Radiobutton(root, text="사이다", value="사이다", variable=drink_var)
+
+  btn_drink1.pack()
+  btn_drink2.pack()
+  ```
+  StringVar는 문자열 값을 관리하는 Tkinter 변수이다.  
+  선택된 라디오버튼의 value 값이 문자열로 저장된다.  
+5. 선택된 값 확인
+  get 함수를 통해 현재 선택된 라디오버튼의 value 값을 확인할 수 있다.  
+  ```py
+  def btncmd():
+    print(burger_var.get())
+    print(drink_var.get())
+
+  btn = Button(root, text="주문", command=btncmd)
+  btn.pack()
+  ```
+  burger_var.get()은 선택된 버거 항목의 정수 value를 반환한다.  
+  drink_var.get()은 선택된 음료 항목의 문자열 value를 반환한다.  
+
+## 라벨로 항목 구분
+
+Label 위젯을 함께 사용하면 라디오버튼 그룹의 용도를 구분해서 보여줄 수 있다.  
+```py
+Label(root, text="메뉴를 선택하세요").pack()
+
+burger_var = IntVar()
+btn_burger1 = Radiobutton(root, text="햄버거", value=1, variable=burger_var)
+btn_burger1.select()
+btn_burger2 = Radiobutton(root, text="치즈버거", value=2, variable=burger_var)
+btn_burger3 = Radiobutton(root, text="치킨버거", value=3, variable=burger_var)
+btn_burger1.pack()
+btn_burger2.pack()
+btn_burger3.pack()
+
+Label(root, text="음료를 선택하세요.").pack()
+
+drink_var = StringVar()
+btn_drink1 = Radiobutton(root, text="콜라", value="콜라", variable=drink_var)
+btn_drink1.select()
+btn_drink2 = Radiobutton(root, text="사이다", value="사이다", variable=drink_var)
+btn_drink1.pack()
+btn_drink2.pack()
+```
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
