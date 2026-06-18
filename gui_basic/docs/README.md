@@ -490,6 +490,8 @@ B) 라디오버튼 배치
 <summary>접기/펼치기</summary>
 <br>
 
+![alt text](radiobutton-widget.gif)
+
 Radiobutton 위젯은 여러 항목 중 하나만 선택할 수 있게 해준다.  
 체크버튼은 여러 개를 동시에 선택할 수 있지만, 라디오버튼은 같은 변수로 묶인 항목 중 하나만 선택된다.  
 
@@ -573,6 +575,87 @@ btn_drink2 = Radiobutton(root, text="사이다", value="사이다", variable=dri
 btn_drink1.pack()
 btn_drink2.pack()
 ```
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 8) 콤보박스 위젯
+## 목차
+
+A) 콤보박스 인스턴스 생성.  
+  1. ttk 모듈 import  
+  2. 선택 목록 생성  
+  3. Combobox 위젯  
+  4. 기본 문구 설정  
+  5. 읽기 전용 콤보박스  
+  6. 선택된 값 확인  
+B) 콤보박스 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](combobox-widget.gif)
+
+Combobox 위젯은 여러 값 중 하나를 선택할 수 있는 드롭다운 형태의 위젯이다.  
+Entry처럼 직접 값을 입력할 수도 있고, readonly 상태로 만들면 정해진 목록에서만 선택할 수 있다.  
+
+## A/B) 기본 콤보박스 출력
+
+Combobox는 tkinter 기본 위젯이 아니라 ttk 모듈에 포함되어 있다.  
+따라서 Combobox를 사용하려면 tkinter.ttk 모듈을 import 해야 한다.  
+1. ttk 모듈 import
+  ```py
+  import tkinter.ttk as ttk
+  from tkinter import *
+  ```
+  ttk는 Tkinter의 확장 위젯 모듈이다.  
+  Combobox처럼 기본 tkinter보다 조금 더 다양한 형태의 위젯을 제공한다.  
+2. 선택 목록 생성
+  ```py
+  values = [str(i) + "일" for i in range(1, 32)]
+  ```
+  리스트 컴프리헨션을 사용하여 1일부터 31일까지의 값을 만든다.  
+  만들어진 values 리스트는 콤보박스의 선택 목록으로 사용된다.  
+3. Combobox 위젯
+  ```py
+  combobox = ttk.Combobox(root, height=5, values=values)
+  combobox.pack()
+  ```
+  height는 드롭다운 목록을 펼쳤을 때 한 번에 보여줄 항목 개수를 의미한다.  
+  values에는 선택 목록으로 사용할 리스트를 전달한다.  
+4. 기본 문구 설정
+  set 함수를 사용하면 콤보박스에 처음 보여줄 값을 설정할 수 있다.  
+  ```py
+  combobox.set("카드 결제일")
+  ```
+  set으로 설정한 값은 목록에 없는 값이어도 표시할 수 있다.  
+  일반 Combobox는 사용자가 직접 값을 입력할 수도 있다.  
+5. 읽기 전용 콤보박스
+  state를 "readonly"로 설정하면 사용자가 직접 입력하지 못하고 목록에서만 선택할 수 있다.  
+  ```py
+  readonly_combobox = ttk.Combobox(root, height=10, values=values, state="readonly")
+  readonly_combobox.current(0)
+  readonly_combobox.pack()
+  ```
+  current 함수는 인덱스를 기준으로 기본 선택값을 지정한다.  
+  current(0)은 values 목록의 첫 번째 값을 기본으로 선택한다.  
+6. 선택된 값 확인
+  get 함수를 통해 현재 콤보박스에 선택된 값을 가져올 수 있다.  
+  ```py
+  def btncmd():
+    print(combobox.get())
+    print(readonly_combobox.get())
+
+  btn = Button(root, text="선택", command=btncmd)
+  btn.pack()
+  ```
+  일반 Combobox는 사용자가 직접 입력한 값도 get 함수로 가져올 수 있다.  
+  readonly Combobox는 목록에서 선택된 값만 가져온다.  
 
 </details>
 <br>
