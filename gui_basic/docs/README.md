@@ -662,6 +662,107 @@ Combobox는 tkinter 기본 위젯이 아니라 ttk 모듈에 포함되어 있다
 <hr>
 <br>
 
+# 예제 9) 진행바 위젯
+## 목차
+
+A) 진행바 인스턴스 생성.  
+  1. ttk 모듈 import  
+  2. Progressbar 위젯  
+  3. 진행바 모드  
+  4. 자동 진행 시작과 중지  
+  5. 변수로 진행 상태 관리  
+  6. 버튼 클릭으로 진행 상태 변경  
+B) 진행바 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](progressbar-widget.gif)
+
+Progressbar 위젯은 작업의 진행 상태를 막대 형태로 보여주는 위젯이다.  
+파일 다운로드, 설치 진행률, 처리 상태처럼 시간이 걸리는 작업의 진행 정도를 표현할 때 사용할 수 있다.  
+
+## A/B) 기본 진행바 출력
+
+Progressbar는 tkinter 기본 위젯이 아니라 ttk 모듈에 포함되어 있다.  
+따라서 Progressbar를 사용하려면 tkinter.ttk 모듈을 import 해야 한다.  
+1. ttk 모듈 import
+  ```py
+  import time
+  import tkinter.ttk as ttk
+  from tkinter import *
+  ```
+  ttk는 Tkinter의 확장 위젯 모듈이다.  
+  Progressbar처럼 기본 tkinter보다 조금 더 다양한 형태의 위젯을 제공한다.  
+  time 모듈은 진행 상태를 천천히 증가시키기 위해 사용한다.  
+2. Progressbar 위젯
+  ```py
+  progressbar = ttk.Progressbar(root, maximum=100, mode="determinate")
+  progressbar.pack()
+  ```
+  maximum은 진행바의 최댓값을 의미한다.  
+  maximum=100이면 진행 상태를 0부터 100까지의 값으로 표현할 수 있다.  
+3. 진행바 모드
+  Progressbar의 mode는 "determinate"와 "indeterminate"가 있다.  
+  ```py
+  progressbar = ttk.Progressbar(root, maximum=100, mode="determinate")
+  ```
+  "determinate"는 진행률의 시작과 끝이 정해져 있는 경우 사용한다.  
+  예를 들어 0부터 100까지 진행되는 작업에 사용할 수 있다.  
+  ```py
+  progressbar = ttk.Progressbar(root, maximum=100, mode="indeterminate")
+  ```
+  "indeterminate"는 진행률의 끝을 정확히 알 수 없는 경우 사용한다.  
+  이 경우 진행바가 좌우로 움직이며 작업 중임을 보여준다.  
+4. 자동 진행 시작과 중지
+  start 함수와 stop 함수를 통해 진행바를 자동으로 움직이거나 멈출 수 있다.  
+  ```py
+  progressbar.start(10)
+
+  def btncmd():
+    progressbar.stop()
+
+  btn = Button(root, text="중지", command=btncmd)
+  btn.pack()
+  ```
+  start 함수의 매개변수는 진행바가 움직이는 간격을 의미한다.  
+  progressbar.start(10)은 10ms마다 진행바를 움직인다.  
+  stop 함수는 동작 중인 진행바를 중지한다.  
+5. 변수로 진행 상태 관리
+  DoubleVar를 사용하면 진행바의 진행 상태를 변수로 관리할 수 있다.  
+  ```py
+  p_var2 = DoubleVar()
+  progressbar2 = ttk.Progressbar(root, maximum=100, length=150, variable=p_var2)
+  progressbar2.pack()
+  ```
+  DoubleVar는 실수 값을 관리하는 Tkinter 변수이다.  
+  진행률이 항상 정수로만 증가하지 않을 수도 있기 때문에 DoubleVar를 사용할 수 있다.  
+  length는 진행바의 길이를 의미한다.  
+6. 버튼 클릭으로 진행 상태 변경
+  set 함수를 통해 DoubleVar 값을 변경하면 연결된 Progressbar의 진행 상태도 변경된다.  
+  ```py
+  def btncmd2():
+    for i in range(1, 101):
+      time.sleep(0.01)
+      p_var2.set(i)
+      progressbar2.update()
+      print(p_var2.get())
+
+  btn = Button(root, text="시작", command=btncmd2)
+  btn.pack()
+  ```
+  p_var2.set(i)는 진행바에 연결된 변수 값을 변경한다.  
+  progressbar2.update()는 반복문이 실행되는 동안 UI가 갱신되도록 한다.  
+  p_var2.get()은 현재 진행 상태 값을 가져온다.  
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
