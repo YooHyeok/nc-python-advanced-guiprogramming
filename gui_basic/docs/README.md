@@ -763,6 +763,110 @@ Progressbar는 tkinter 기본 위젯이 아니라 ttk 모듈에 포함되어 있
 <hr>
 <br>
 
+# 예제 10) 메뉴 위젯
+## 목차
+
+A) 메뉴 인스턴스 생성.  
+  1. Menu 위젯  
+  2. File 메뉴 생성  
+  3. 메뉴 항목 추가  
+  4. 구분선 추가  
+  5. 비활성 메뉴  
+  6. 라디오버튼 메뉴  
+  7. 체크버튼 메뉴  
+  8. 창에 메뉴 연결  
+B) 메뉴 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](menu-widget.gif)
+
+Menu 위젯은 프로그램 상단에 메뉴바를 만들거나, 메뉴바 안에 하위 메뉴를 구성할 때 사용한다.  
+파일, 편집, 보기처럼 여러 기능을 묶어서 제공할 때 사용할 수 있다.  
+
+## A/B) 기본 메뉴 출력
+
+Menu 위젯은 먼저 최상위 메뉴바를 만들고, 그 안에 하위 메뉴를 추가하는 방식으로 구성한다.  
+마지막에는 root.config 함수의 menu 키워드에 최상위 메뉴바를 연결해야 화면에 출력된다.  
+1. Menu 위젯
+  ```py
+  menu = Menu(root)
+  ```
+  root를 부모로 하는 최상위 메뉴바를 생성한다.  
+  이 menu 안에 File, Edit, Language 같은 하위 메뉴를 추가할 수 있다.  
+2. File 메뉴 생성
+  ```py
+  menu_file = Menu(menu, tearoff=0)
+  ```
+  menu를 부모로 하는 File 하위 메뉴를 생성한다.  
+  tearoff=0은 메뉴를 분리할 수 있는 점선 영역을 제거한다는 의미이다.  
+3. 메뉴 항목 추가
+  add_command 함수를 통해 메뉴 안에 클릭 가능한 항목을 추가할 수 있다.  
+  ```py
+  def create_new_file():
+    print("새 파일을 만듭니다.")
+
+  menu_file.add_command(label="New File", command=create_new_file)
+  menu_file.add_command(label="New Window")
+  menu_file.add_command(label="Open File...")
+  ```
+  label은 메뉴에 출력될 글자를 의미한다.  
+  command에는 메뉴를 클릭했을 때 실행할 함수를 연결할 수 있다.  
+4. 구분선 추가
+  add_separator 함수를 사용하면 메뉴 항목 사이에 구분선을 추가할 수 있다.  
+  ```py
+  menu_file.add_separator()
+  ```
+  서로 다른 성격의 메뉴 항목을 나누어 보여줄 때 사용한다.  
+5. 비활성 메뉴
+  state를 "disabled"로 설정하면 메뉴 항목을 비활성화할 수 있다.  
+  ```py
+  menu_file.add_command(label="Save All", state="disabled")
+  ```
+  비활성화된 메뉴는 화면에 보이지만 선택할 수 없다.  
+6. 하위 메뉴 연결
+  add_cascade 함수를 통해 최상위 메뉴바에 하위 메뉴를 연결할 수 있다.  
+  ```py
+  menu_file.add_command(label="Exit", command=root.quit)
+  menu.add_cascade(label="File", menu=menu_file)
+  ```
+  label은 메뉴바에 보여질 이름을 의미한다.  
+  menu에는 연결할 하위 메뉴 인스턴스를 전달한다.  
+  root.quit은 프로그램의 이벤트 루프를 종료할 때 사용할 수 있다.  
+7. 라디오버튼 메뉴
+  add_radiobutton 함수를 사용하면 메뉴 안에 하나만 선택 가능한 항목을 만들 수 있다.  
+  ```py
+  menu_lang = Menu(menu, tearoff=0)
+  menu_lang.add_radiobutton(label="Python")
+  menu_lang.add_radiobutton(label="Java")
+  menu_lang.add_radiobutton(label="C++")
+  menu.add_cascade(label="Language", menu=menu_lang)
+  ```
+  라디오버튼 메뉴는 여러 항목 중 하나를 선택하는 메뉴에 사용할 수 있다.  
+8. 체크버튼 메뉴
+  add_checkbutton 함수를 사용하면 메뉴 안에 체크 가능한 항목을 만들 수 있다.  
+  ```py
+  menu_view = Menu(menu, tearoff=0)
+  menu_view.add_checkbutton(label="Show Minimap")
+  menu.add_cascade(label="View", menu=menu_view)
+  ```
+  체크버튼 메뉴는 켜기/끄기 형태의 옵션에 사용할 수 있다.  
+9. 창에 메뉴 연결
+  생성한 최상위 메뉴바는 root.config 함수로 창에 연결한다.  
+  ```py
+  root.config(menu=menu)
+  ```
+  이 코드를 호출해야 프로그램 창 상단에 메뉴바가 출력된다.  
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
