@@ -71,6 +71,7 @@ A) 버튼 인스턴스 생성.
   3. 버튼 색상 조정
   4. 이미지 타입 버튼
   5. 버튼 동작 - 함수 정의 및 연동
+
 B) 버튼 배치
 
 
@@ -162,6 +163,7 @@ A) 레이블 인스턴스 생성.
   1. 텍스트 타입 레이블  
   2. 이미지 타입 레이블  
   3. 레이블 동적 업데이트 - 버튼 클릭시 레이블  
+
 B) 레이블 배치
 
 <br>
@@ -220,6 +222,7 @@ A) 텍스트, 엔트리 인스턴스 생성.
   3. 기본값 입력  
   4. 입력값 출력  
   5. 입력값 삭제  
+
 B) 텍스트, 엔트리 배치
 
 
@@ -301,6 +304,7 @@ A) 리스트박스 인스턴스 생성.
   4. 항목 개수 확인  
   5. 항목 조회  
   6. 선택된 항목 확인  
+
 B) 리스트박스 배치
 
 
@@ -397,6 +401,7 @@ A) 체크버튼 인스턴스 생성.
   2. Checkbutton 위젯  
   3. 체크 상태 설정  
   4. 체크 여부 확인  
+
 B) 체크버튼 배치
 
 
@@ -482,6 +487,7 @@ A) 라디오버튼 인스턴스 생성.
   3. 기본 선택 설정  
   4. StringVar 사용  
   5. 선택된 값 확인  
+
 B) 라디오버튼 배치
 
 
@@ -591,6 +597,7 @@ A) 콤보박스 인스턴스 생성.
   4. 기본 문구 설정  
   5. 읽기 전용 콤보박스  
   6. 선택된 값 확인  
+
 B) 콤보박스 배치
 
 
@@ -672,6 +679,7 @@ A) 진행바 인스턴스 생성.
   4. 자동 진행 시작과 중지  
   5. 변수로 진행 상태 관리  
   6. 버튼 클릭으로 진행 상태 변경  
+
 B) 진행바 배치
 
 
@@ -775,6 +783,7 @@ A) 메뉴 인스턴스 생성.
   6. 라디오버튼 메뉴  
   7. 체크버튼 메뉴  
   8. 창에 메뉴 연결  
+
 B) 메뉴 배치
 
 
@@ -861,6 +870,125 @@ Menu 위젯은 먼저 최상위 메뉴바를 만들고, 그 안에 하위 메뉴
   root.config(menu=menu)
   ```
   이 코드를 호출해야 프로그램 창 상단에 메뉴바가 출력된다.  
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 11) 메시지박스
+## 목차
+
+A) 메시지박스 함수 사용.  
+  1. messagebox 모듈 import  
+  2. 알림 메시지  
+  3. 경고 메시지  
+  4. 에러 메시지  
+  5. 확인 / 취소 메시지  
+  6. 재시도 / 취소 메시지  
+  7. 예 / 아니오 메시지  
+  8. 예 / 아니오 / 취소 메시지  
+  
+B) 버튼으로 메시지박스 실행
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](messagebox.gif)
+
+messagebox는 사용자에게 알림, 경고, 에러, 확인창 같은 팝업 창을 보여줄 때 사용한다.  
+단순히 메시지만 보여주는 함수도 있고, 사용자의 선택 결과를 반환하는 함수도 있다.  
+
+## A/B) 기본 메시지박스 출력
+
+messagebox는 tkinter의 하위 모듈이므로 별도로 import 해서 사용한다.  
+버튼의 command 키워드에 메시지박스를 실행하는 함수를 연결하면 버튼 클릭시 팝업창을 띄울 수 있다.  
+1. messagebox 모듈 import
+  ```py
+  import tkinter.messagebox as msgbox
+  from tkinter import *
+  ```
+  tkinter.messagebox를 msgbox라는 별칭으로 import 한다.  
+  이후 msgbox.showinfo(), msgbox.askyesno() 같은 형태로 메시지박스 함수를 호출할 수 있다.  
+2. 알림 메시지
+  showinfo 함수는 일반적인 안내 메시지를 보여줄 때 사용한다.  
+  ```py
+  def info():
+    msgbox.showinfo("알림", "정상적으로 예매 완료되었습니다.")
+  ```
+  첫 번째 매개변수는 메시지박스 제목이고, 두 번째 매개변수는 표시할 내용이다.  
+3. 경고 메시지
+  showwarning 함수는 사용자에게 주의가 필요한 내용을 보여줄 때 사용한다.  
+  ```py
+  def warn():
+    msgbox.showwarning("경고", "해당 좌석은 매진되었습니다.")
+  ```
+4. 에러 메시지
+  showerror 함수는 오류 상황을 보여줄 때 사용한다.  
+  ```py
+  def error():
+    msgbox.showerror("에러", "결제 오류가 발생했습니다.")
+  ```
+5. 확인 / 취소 메시지
+  askokcancel 함수는 확인과 취소 중 하나를 선택하게 할 때 사용한다.  
+  ```py
+  def okcancel():
+    msgbox.askokcancel("확인 / 취소", "해당 좌석은 유아동반석입니다. 예매하시겠습니까?")
+  ```
+  확인을 누르면 True, 취소를 누르면 False를 반환한다.  
+6. 재시도 / 취소 메시지
+  askretrycancel 함수는 재시도와 취소 중 하나를 선택하게 할 때 사용한다.  
+  ```py
+  def retrycancel():
+    response = msgbox.askretrycancel("재시도 / 취소", "일시적인 오류입니다 다시 시도하시겠습니까?")
+    print("응답 : ", response)
+    if response == 1:
+      print("재시도")
+    elif response == 0:
+      print("취소")
+  ```
+  재시도를 누르면 True, 취소를 누르면 False를 반환한다.  
+7. 예 / 아니오 메시지
+  askyesno 함수는 예와 아니오 중 하나를 선택하게 할 때 사용한다.  
+  ```py
+  def yesno():
+    msgbox.askyesno("예 / 아니오", "해당 좌석은 역방향입니다. 예매하시겠습니까?")
+  ```
+  예를 누르면 True, 아니오를 누르면 False를 반환한다.  
+8. 예 / 아니오 / 취소 메시지
+  askyesnocancel 함수는 예, 아니오, 취소 중 하나를 선택하게 할 때 사용한다.  
+  ```py
+  def yesnocancel():
+    response = msgbox.askyesnocancel(
+      title=None,
+      message="예매 내역이 저장되지 않았습니다/ \n 저장 후 프로그램을 종료하시겠습니까?"
+    )
+    print("응답 : ", response)
+    if response == 1:
+      print("예")
+    elif response == 0:
+      print("아니요")
+    else:
+      print("취소")
+  ```
+  예를 누르면 True, 아니오를 누르면 False, 취소를 누르면 None을 반환한다.  
+
+## 버튼으로 메시지박스 실행
+
+각 메시지박스 함수를 버튼의 command 키워드에 연결하면 버튼 클릭시 해당 메시지박스를 실행할 수 있다.  
+```py
+Button(root, command=info, text="알림").pack()
+Button(root, command=warn, text="경고").pack()
+Button(root, command=error, text="에러").pack()
+Button(root, command=okcancel, text="확인 취소").pack()
+Button(root, command=retrycancel, text="재시도 취소").pack()
+Button(root, command=yesno, text="예 아니오").pack()
+Button(root, command=yesnocancel, text="예 아니오 취소").pack()
+```
+command에는 함수 호출 결과가 아니라 함수 이름을 전달해야 한다.  
+즉 command=info처럼 작성해야 버튼을 클릭했을 때 info 함수가 실행된다.  
 
 </details>
 <br>
