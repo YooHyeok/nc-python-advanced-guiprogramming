@@ -995,6 +995,101 @@ command에는 함수 호출 결과가 아니라 함수 이름을 전달해야 �
 <hr>
 <br>
 
+# 예제 12) 프레임 위젯
+## 목차
+
+A) 프레임 인스턴스 생성.  
+  1. 기본 위젯 배치  
+  2. Frame 위젯  
+  3. Frame 안에 위젯 배치  
+  4. LabelFrame 위젯  
+  5. pack 옵션  
+B) 프레임 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](image-2.png)
+
+Frame 위젯은 여러 위젯을 하나의 영역으로 묶어서 관리할 때 사용한다.  
+버튼, 레이블 같은 위젯들을 프레임 안에 넣으면 화면 영역을 나누어 배치하기 쉽다.  
+
+## A/B) 기본 프레임 출력
+
+Frame은 직접 어떤 내용을 출력하기보다는, 다른 위젯들을 담는 컨테이너 역할을 한다.  
+프레임을 생성한 뒤 pack 함수로 배치하고, 버튼이나 레이블 같은 위젯의 부모를 해당 프레임으로 지정하면 프레임 안에 배치된다.  
+1. 기본 위젯 배치
+  ```py
+  Label(root, text="메뉴를 선택해 주세요").pack(side="top")
+  Button(root, text="주문하기").pack(side="bottom")
+  ```
+  side 옵션을 사용하면 위젯을 어느 방향에 배치할지 지정할 수 있다.  
+  "top"은 위쪽, "bottom"은 아래쪽을 의미한다.  
+2. Frame 위젯
+  ```py
+  frame_burger = Frame(root, relief="solid", bd=1)
+  frame_burger.pack(side="left", fill="both", expand=True)
+  ```
+  Frame은 위젯들을 묶기 위한 영역을 만든다.  
+  relief는 테두리 모양을 의미하고, bd는 borderwidth의 약자로 테두리 두께를 의미한다.  
+  relief="solid", bd=1을 지정하면 프레임 경계가 보이도록 출력된다.  
+3. Frame 안에 위젯 배치
+  ```py
+  Button(frame_burger, text="햄버거").pack()
+  Button(frame_burger, text="치즈버거").pack()
+  Button(frame_burger, text="치킨버거").pack()
+  ```
+  Button의 부모를 root가 아니라 frame_burger로 지정하면 해당 버튼들은 frame_burger 안에 배치된다.  
+  이렇게 하면 햄버거 메뉴 버튼들을 하나의 영역으로 묶어 관리할 수 있다.  
+4. LabelFrame 위젯
+  ```py
+  frame_drink = LabelFrame(root, text="음료")
+  frame_drink.pack(side="right", fill="both", expand=True)
+
+  Button(frame_drink, text="콜라").pack()
+  Button(frame_drink, text="사이다").pack()
+  ```
+  LabelFrame은 제목이 있는 프레임이다.  
+  text 키워드에 전달한 값이 프레임의 제목처럼 출력된다.  
+  위 코드에서는 "음료"라는 제목을 가진 프레임 안에 콜라, 사이다 버튼을 배치한다.  
+5. pack 옵션
+  프레임을 배치할 때 side, fill, expand 옵션을 함께 사용할 수 있다.  
+  ```py
+  frame_burger.pack(side="left")
+  frame_burger.pack(side="left", fill="both")
+  frame_burger.pack(side="left", fill="both", expand=True)
+  ```
+  side="left"는 프레임을 왼쪽에 배치한다.  
+  fill="both"는 프레임이 가로, 세로 방향으로 영역을 채우도록 한다.  
+  expand=True는 남는 공간을 프레임이 확장해서 차지하도록 한다.  
+
+## 메뉴 영역 나누기
+
+Frame과 LabelFrame을 함께 사용하면 화면을 메뉴별 영역으로 나눌 수 있다.  
+```py
+frame_burger = Frame(root, relief="solid", bd=1)
+frame_burger.pack(side="left", fill="both", expand=True)
+
+Button(frame_burger, text="햄버거").pack()
+Button(frame_burger, text="치즈버거").pack()
+Button(frame_burger, text="치킨버거").pack()
+
+frame_drink = LabelFrame(root, text="음료")
+frame_drink.pack(side="right", fill="both", expand=True)
+
+Button(frame_drink, text="콜라").pack()
+Button(frame_drink, text="사이다").pack()
+```
+프레임을 기준으로 위젯을 나누면 각 영역의 배치와 관리를 분리할 수 있다.  
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
