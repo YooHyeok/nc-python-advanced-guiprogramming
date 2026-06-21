@@ -37,4 +37,4 @@ menu_view.add_checkbutton(label="Show Minimap")
 menu.add_cascade(label="View", menu=menu_view)
 
 root.config(menu=menu)
-root.mainloop()(root)
+root.mainloop()
