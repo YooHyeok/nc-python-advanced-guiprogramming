@@ -1090,6 +1090,98 @@ Button(frame_drink, text="사이다").pack()
 <hr>
 <br>
 
+# 예제 13) 스크롤바 위젯
+## 목차
+
+A) 스크롤바 인스턴스 생성.  
+  1. Frame 위젯  
+  2. Scrollbar 위젯  
+  3. Listbox와 스크롤바 연결  
+  4. 목록 데이터 추가  
+  5. 스크롤바 동작 연결  
+B) 스크롤바 배치
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](scrollbar.gif)
+
+Scrollbar 위젯은 Listbox, Text, Canvas 같은 위젯의 내용을 스크롤할 수 있게 해주는 보조 위젯이다.  
+스크롤바는 단독으로 사용하기보다는 스크롤할 대상 위젯과 서로 연결해서 사용한다.  
+
+## A/B) 기본 스크롤바 출력
+
+스크롤바와 리스트박스를 함께 배치하기 위해 먼저 Frame을 생성한다.  
+Frame 안에 Scrollbar와 Listbox를 넣으면 두 위젯을 하나의 영역으로 묶어서 배치할 수 있다.  
+1. Frame 위젯
+  ```py
+  frame = Frame(root)
+  frame.pack()
+  ```
+  Frame은 스크롤바와 리스트박스를 함께 담기 위한 컨테이너 역할을 한다.  
+  스크롤바와 리스트박스를 같은 Frame 안에 넣으면 서로 나란히 배치하기 쉽다.  
+2. Scrollbar 위젯
+  ```py
+  scrollbar = Scrollbar(frame)
+  scrollbar.pack(side="right", fill="y")
+  ```
+  Scrollbar의 부모를 frame으로 지정하면 스크롤바가 frame 안에 배치된다.  
+  side="right"는 스크롤바를 오른쪽에 배치한다.  
+  fill="y"는 스크롤바가 세로 방향 영역을 채우도록 한다.  
+3. Listbox와 스크롤바 연결
+  ```py
+  listbox = Listbox(
+    frame,
+    selectmode="extended",
+    height=10,
+    yscrollcommand=scrollbar.set
+  )
+  listbox.pack()
+  ```
+  yscrollcommand는 리스트박스의 세로 스크롤 상태를 스크롤바에 전달하는 역할을 한다.  
+  scrollbar.set을 연결해야 리스트박스를 스크롤할 때 스크롤바 위치도 함께 변경된다.  
+4. 목록 데이터 추가
+  ```py
+  for i in range(1, 32):
+    listbox.insert(END, str(i) + "일")
+  ```
+  반복문을 사용하여 1일부터 31일까지의 값을 리스트박스에 추가한다.  
+  END를 사용하면 새 항목이 리스트박스의 마지막에 추가된다.  
+5. 스크롤바 동작 연결
+  ```py
+  scrollbar.config(command=listbox.yview)
+  ```
+  command에 listbox.yview를 연결하면 스크롤바를 움직였을 때 리스트박스의 y축 화면이 함께 움직인다.  
+  스크롤바와 리스트박스는 양쪽 연결이 모두 필요하다.  
+  yscrollcommand=scrollbar.set은 리스트박스의 움직임을 스크롤바에 알려주고, command=listbox.yview는 스크롤바의 움직임을 리스트박스에 알려준다.  
+
+## 스크롤바와 리스트박스 전체 연결
+
+스크롤바를 사용할 때는 스크롤바와 대상 위젯을 서로 연결해야 정상적으로 동작한다.  
+```py
+frame = Frame(root)
+frame.pack()
+
+scrollbar = Scrollbar(frame)
+scrollbar.pack(side="right", fill="y")
+
+listbox = Listbox(frame, selectmode="extended", height=10, yscrollcommand=scrollbar.set)
+for i in range(1, 32):
+  listbox.insert(END, str(i) + "일")
+listbox.pack()
+
+scrollbar.config(command=listbox.yview)
+```
+이 구조에서 Listbox는 실제 목록을 보여주고, Scrollbar는 목록의 세로 위치를 조절한다.  
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
