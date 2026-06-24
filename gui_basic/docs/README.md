@@ -1182,6 +1182,262 @@ scrollbar.config(command=listbox.yview)
 <hr>
 <br>
 
+# 예제 14) grid 배치
+## 목차
+
+A) 기본 예제  
+  1. pack 배치와 grid 배치  
+B) 계산기 예제  
+  2. row, column  
+  3. sticky 옵션  
+  4. padx, pady  
+  5. rowspan, columnspan  
+  6. width, height  
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](image-3.png)
+
+grid는 위젯을 행(row)과 열(column) 기준으로 배치하는 배치 관리자이다.  
+계산기, 로그인 폼, 표 형태 화면처럼 일정한 칸 구조가 필요한 UI를 만들 때 사용할 수 있다.  
+
+## A) 기본 예제
+
+pack은 위젯을 위, 아래, 왼쪽, 오른쪽 방향으로 쌓는 방식이고, grid는 지정한 행과 열 위치에 위젯을 배치하는 방식이다.  
+같은 부모 위젯 안에서는 pack과 grid를 섞어 쓰지 않는 것이 좋다.  
+- pack 배치
+  ```py
+  btn1 = Button(root, text="버튼1")
+  btn2 = Button(root, text="버튼2")
+
+  btn1.pack(side="left")
+  btn2.pack(side="right")
+  ```
+  정의된 btn 객체로부터 pack() 함수를 호출하여 버튼을 배치한다.  
+  pack() 함수의 side 키워드 인자는 위젯이 배치될 방향을 의미하며, 문자열 타입으로 값을 전달한다.  
+  side="left"는 왼쪽, side="right"는 오른쪽에 위젯을 배치한다.  
+- grid 배치
+  ```py
+  btn1.grid(row=0, column=0)
+  btn2.grid(row=1, column=1)
+  ```
+  정의된 btn 객체로부터 grid() 함수를 호출하여 버튼을 배치한다.  
+  grid() 함수는 row와 column 키워드 인자를 통해 위젯을 배치할 위치를 지정한다.  
+  row와 column은 숫자 형식의 값을 전달하며, row는 행 위치, column은 열 위치를 의미한다.  
+
+## B) 계산기 예제
+
+계산기 예제는 모든 버튼을 선언한 뒤, grid 옵션을 단계별로 추가하면서 완성한다.  
+2. row, column
+  ```py
+  btn_f16 = Button(root, text="F16")
+  btn_f17 = Button(root, text="F17")
+  btn_f18 = Button(root, text="F18")
+  btn_f19 = Button(root, text="F19")
+
+  btn_clear = Button(root, text="clear")
+  btn_equal = Button(root, text="=")
+  btn_div = Button(root, text="/")
+  btn_mul = Button(root, text="*")
+
+  btn_7 = Button(root, text="7")
+  btn_8 = Button(root, text="8")
+  btn_9 = Button(root, text="9")
+  btn_sub = Button(root, text="-")
+
+  btn_4 = Button(root, text="4")
+  btn_5 = Button(root, text="5")
+  btn_6 = Button(root, text="6")
+  btn_add = Button(root, text="-")
+
+  btn_1 = Button(root, text="1")
+  btn_2 = Button(root, text="2")
+  btn_3 = Button(root, text="3")
+  btn_enter = Button(root, text="enter")
+
+  btn_0 = Button(root, text="0")
+  btn_point = Button(root, text=".")
+
+  btn_f16.grid(row=0, column=0)
+  btn_f17.grid(row=0, column=1)
+  btn_f18.grid(row=0, column=2)
+  btn_f19.grid(row=0, column=3)
+
+  btn_clear.grid(row=1, column=0)
+  btn_equal.grid(row=1, column=1)
+  btn_div.grid(row=1, column=2)
+  btn_mul.grid(row=1, column=3)
+
+  btn_7.grid(row=2, column=0)
+  btn_8.grid(row=2, column=1)
+  btn_9.grid(row=2, column=2)
+  btn_sub.grid(row=2, column=3)
+
+  btn_4.grid(row=3, column=0)
+  btn_5.grid(row=3, column=1)
+  btn_6.grid(row=3, column=2)
+  btn_add.grid(row=3, column=3)
+
+  btn_1.grid(row=4, column=0)
+  btn_2.grid(row=4, column=1)
+  btn_3.grid(row=4, column=2)
+  btn_enter.grid(row=4, column=3)
+
+  btn_0.grid(row=5, column=0)
+  btn_point.grid(row=5, column=2)
+  ```
+  정의된 각 버튼 객체로부터 grid() 함수를 호출하며, row 키워드 인자와 column 키워드 인자를 전달한다.  
+  row와 column은 숫자 형식의 값을 받는다.  
+  row가 0이면 0번째 행을 의미하고, column이 0이면 0번째 열을 의미한다.  
+  예를 들어 row=0, column=0은 0행 0열 위치이고, row=1, column=0은 1행 0열 위치이다.  
+3. sticky 옵션
+  ```py
+  btn_f16.grid(row=0, column=0, sticky=N+E+W+S)
+  btn_f17.grid(row=0, column=1, sticky=N+E+W+S)
+  btn_f18.grid(row=0, column=2, sticky=N+E+W+S)
+  btn_f19.grid(row=0, column=3, sticky=N+E+W+S)
+
+  btn_clear.grid(row=1, column=0, sticky=N+E+W+S)
+  btn_equal.grid(row=1, column=1, sticky=N+E+W+S)
+  btn_div.grid(row=1, column=2, sticky=N+E+W+S)
+  btn_mul.grid(row=1, column=3, sticky=N+E+W+S)
+
+  btn_7.grid(row=2, column=0, sticky=N+E+W+S)
+  btn_8.grid(row=2, column=1, sticky=N+E+W+S)
+  btn_9.grid(row=2, column=2, sticky=N+E+W+S)
+  btn_sub.grid(row=2, column=3, sticky=N+E+W+S)
+
+  btn_4.grid(row=3, column=0, sticky=N+E+W+S)
+  btn_5.grid(row=3, column=1, sticky=N+E+W+S)
+  btn_6.grid(row=3, column=2, sticky=N+E+W+S)
+  btn_add.grid(row=3, column=3, sticky=N+E+W+S)
+
+  btn_1.grid(row=4, column=0, sticky=N+E+W+S)
+  btn_2.grid(row=4, column=1, sticky=N+E+W+S)
+  btn_3.grid(row=4, column=2, sticky=N+E+W+S)
+  btn_enter.grid(row=4, column=3, sticky=N+E+W+S)
+
+  btn_0.grid(row=5, column=0, sticky=N+E+W+S)
+  btn_point.grid(row=5, column=2, sticky=N+E+W+S)
+  ```
+  정의된 각 버튼 객체로부터 grid() 함수를 호출하며, 기존 row와 column 배치 코드에 sticky 키워드 인자를 추가한다.  
+  sticky는 grid로 배치된 하나의 칸 안에서 위젯이 어느 방향으로 붙거나 늘어날지 지정한다.  
+  sticky에는 Tkinter에서 제공하는 방향 상수인 N, E, W, S를 조합해서 전달한다.  
+  N은 위쪽, E는 오른쪽, W는 왼쪽, S는 아래쪽을 의미한다.  
+  N+E+W+S를 모두 지정하면 위젯이 상하좌우 방향으로 늘어나며, 해당 grid 영역을 채우게 된다.  
+4. padx, pady
+  ```py
+  btn_f16.grid(row=0, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_f17.grid(row=0, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_f18.grid(row=0, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_f19.grid(row=0, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_clear.grid(row=1, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_equal.grid(row=1, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_div.grid(row=1, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_mul.grid(row=1, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_7.grid(row=2, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_8.grid(row=2, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_9.grid(row=2, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_sub.grid(row=2, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_4.grid(row=3, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_5.grid(row=3, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_6.grid(row=3, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_add.grid(row=3, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_1.grid(row=4, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_2.grid(row=4, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_3.grid(row=4, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_enter.grid(row=4, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_0.grid(row=5, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_point.grid(row=5, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  ```
+  정의된 각 버튼 객체로부터 grid() 함수를 호출하며, 기존 row, column, sticky 배치 코드에 padx와 pady 키워드 인자를 추가한다.  
+  grid() 함수의 padx와 pady는 숫자 형식의 값을 받으며, 위젯 바깥쪽 여백을 의미한다.  
+  padx는 x축 방향 여백이므로 좌우 바깥 여백을 의미하고, pady는 y축 방향 여백이므로 상하 바깥 여백을 의미한다.  
+  Button 생성자의 padx, pady는 버튼 내부 여백이고, grid() 함수의 padx, pady는 버튼 외부 여백이다.  
+5. rowspan, columnspan
+  ```py
+  btn_f16.grid(row=0, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_f17.grid(row=0, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_f18.grid(row=0, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_f19.grid(row=0, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_clear.grid(row=1, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_equal.grid(row=1, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_div.grid(row=1, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_mul.grid(row=1, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_7.grid(row=2, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_8.grid(row=2, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_9.grid(row=2, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_sub.grid(row=2, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_4.grid(row=3, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_5.grid(row=3, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_6.grid(row=3, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_add.grid(row=3, column=3, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_1.grid(row=4, column=0, sticky=N+E+W+S, padx=3, pady=3)
+  btn_2.grid(row=4, column=1, sticky=N+E+W+S, padx=3, pady=3)
+  btn_3.grid(row=4, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_enter.grid(row=4, column=3, rowspan=2, sticky=N+E+W+S, padx=3, pady=3)
+
+  btn_0.grid(row=5, column=0, columnspan=2, sticky=N+E+W+S, padx=3, pady=3)
+  btn_point.grid(row=5, column=2, sticky=N+E+W+S, padx=3, pady=3)
+  ```
+  정의된 버튼 객체로부터 grid() 함수를 호출하며, 특정 버튼에 rowspan 또는 columnspan 키워드 인자를 추가한다.  
+  rowspan과 columnspan은 숫자 형식의 값을 받으며, 위젯이 차지할 grid 칸의 개수를 의미한다.  
+  rowspan은 세로 방향으로 여러 행을 합쳐서 위젯을 배치하고, columnspan은 가로 방향으로 여러 열을 합쳐서 위젯을 배치한다.  
+  enter 버튼은 rowspan=2를 통해 현재 위치인 row=4, column=3부터 세로로 2칸을 차지한다.  
+  0 버튼은 columnspan=2를 통해 현재 위치인 row=5, column=0부터 가로로 2칸을 차지한다.  
+6. width, height
+  ```py
+  btn_f16 = Button(root, text="F16", width=5, height=2)
+  btn_f17 = Button(root, text="F17", width=5, height=2)
+  btn_f18 = Button(root, text="F18", width=5, height=2)
+  btn_f19 = Button(root, text="F19", width=5, height=2)
+
+  btn_clear = Button(root, text="clear", width=5, height=2)
+  btn_equal = Button(root, text="=", width=5, height=2)
+  btn_div = Button(root, text="/", width=5, height=2)
+  btn_mul = Button(root, text="*", width=5, height=2)
+
+  btn_7 = Button(root, text="7", width=5, height=2)
+  btn_8 = Button(root, text="8", width=5, height=2)
+  btn_9 = Button(root, text="9", width=5, height=2)
+  btn_sub = Button(root, text="-", width=5, height=2)
+
+  btn_4 = Button(root, text="4", width=5, height=2)
+  btn_5 = Button(root, text="5", width=5, height=2)
+  btn_6 = Button(root, text="6", width=5, height=2)
+  btn_add = Button(root, text="-", width=5, height=2)
+
+  btn_1 = Button(root, text="1", width=5, height=2)
+  btn_2 = Button(root, text="2", width=5, height=2)
+  btn_3 = Button(root, text="3", width=5, height=2)
+  btn_enter = Button(root, text="enter", width=5, height=2)
+
+  btn_0 = Button(root, text="0", width=5, height=2)
+  btn_point = Button(root, text=".", width=5, height=2)
+  ```
+  Button 클래스의 인스턴스를 생성할 때 width와 height 키워드 인자를 전달하여 버튼 크기를 지정한다.  
+  width와 height는 숫자 형식의 값을 받으며, width는 버튼의 너비, height는 버튼의 높이를 의미한다.  
+  텍스트 버튼에서 width와 height는 픽셀보다는 글자 단위에 가까운 크기 기준으로 동작한다.  
+  계산기처럼 여러 버튼의 크기를 일정하게 맞추고 싶을 때 모든 Button 인스턴스에 같은 width와 height 값을 전달할 수 있다.  
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
