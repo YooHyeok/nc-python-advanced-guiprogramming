@@ -1,4 +1,5 @@
 # [루트/README.md](../../README.md)
+# [프로젝트: 이미지 병합 프로그램](../../gui_project/docs/README.md)
 
 # 예제 1) 프레임
 

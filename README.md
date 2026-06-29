@@ -6,6 +6,6 @@ tkinter란?
 
 ## 최종 결과물
 영화나 드라마 혹은 드라마 또는 유투브 영상의 중요한 부분을 캡쳐하고, 여러 수많은 이미지들을 하나의 이미지로 합쳐주는 프로그램
-
-## [01) tkinter 기본기](gui-basic/docs/README.md)
+## [01) tkinter 기본기](gui_basic/docs/README.md)
+## [02) 프로젝트(이미지 병합 프로그램()](gui_project/docs/README.md)
 
