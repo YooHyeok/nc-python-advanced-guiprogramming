@@ -527,6 +527,214 @@ root.mainloop()
 <hr>
 <br>
 
+# 예제 3) 레이아웃 3 - 여백과 높이 조정
+## 목차
+
+1. A) 간격 띄우기 - `padx`, `pady`
+2. B) 프레임 높이 조정 - `ipady`
+3. 변경 코드 흐름
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](image-3.png)
+
+이번 단계에서는 각 영역에 `padx`, `pady`로 바깥 여백을 주고, 일부 프레임에는 `ipady`로 내부 높이를 조정한다.
+아래는 어느 영역에 적용했는지 기준으로 정리한 변경 내역이다.
+
+## 1. A) 간격 띄우기 - `padx`, `pady`
+
+`padx`, `pady`는 위젯 바깥 간격을 만든다.
+파일/리스트/저장경로/옵션/진행상황/실행 영역에 적용했다.
+
+- 파일/리스트 프레임
+
+```py
+### 파일 프레임 (파일 추가, 선택 삭제)
+file_frame = Frame(root)
+file_frame.pack(fill="x", padx=5, pady=5) # x축 기준 간격 펼치기 / A) 간격 띄우기 - pad
+
+### 생략
+
+### 리스트 프레임
+list_frame=Frame(root)
+list_frame.pack(fill="both", padx=5, pady=5)
+```
+
+- 저장 경로 영역
+
+```py
+### 저장 경로 프레임
+path_frame = LabelFrame(root, text="저장경로")
+path_frame.pack(fill="x", padx=5, pady=5, ipady=4) # 저장경로 x축 기준 간격 펼치기 / B) 프레임 높이 조정 - ipad
+
+txt_dest_path = Entry(path_frame, width=50)
+txt_dest_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # iapy: 높이 조정 / A) 간격 띄우기 - pad
+
+btn_dest_path = Button(path_frame, text="찾아보기", width=10)
+btn_dest_path.pack(side="right", padx=5, pady=5)
+```
+
+- 옵션 영역
+
+```py
+### 옵션 프레임
+frame_option = LabelFrame(root, text="옵션")
+frame_option.pack(padx=5, pady=5, ipady=4) # B) 프레임 높이 조정 - ipad
+
+### 가로 넓이 라벨
+Label(frame_option, text="가로넓이", width=8).pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+### 생략
+
+cmb_width.pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+### 생략
+
+Label(frame_option, text="포맷", width=8).pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+### 생략
+
+cmb_format.pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+```
+
+- 진행상황/실행 영역
+
+```py
+### 진행상황 Progress Bar
+frame_progress = LabelFrame(root, text="진행상황")
+frame_progress.pack(fill="x", padx=5, pady=5, ipady=4) # B) 프레임 높이 조정 - ipad / B) 프레임 높이 조정 - ipad
+
+### 생략
+
+progress_bar.pack(fill="x", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+### 실행 프레임
+frame_run = Frame(root)
+frame_run.pack(fill="x", padx=5, pady=5)
+
+### 생략
+
+btn_close.pack(side="right", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+btn_start.pack(side="right", padx=5, pady=5) # A) 간격 띄우기 - pad
+```
+
+## 2. B) 프레임 높이 조정 - `ipady`
+
+`ipady`는 위젯 내부의 세로 여백을 만든다.
+저장 경로, 옵션, 진행상황 `LabelFrame`에 적용했다.
+
+- 높이를 조정한 프레임
+
+```py
+### 저장 경로 프레임
+path_frame = LabelFrame(root, text="저장경로")
+path_frame.pack(fill="x", padx=5, pady=5, ipady=4) # 저장경로 x축 기준 간격 펼치기 / B) 프레임 높이 조정 - ipad
+
+### 생략
+
+### 옵션 프레임
+frame_option = LabelFrame(root, text="옵션")
+frame_option.pack(padx=5, pady=5, ipady=4) # B) 프레임 높이 조정 - ipad
+
+### 생략
+
+### 진행상황 Progress Bar
+frame_progress = LabelFrame(root, text="진행상황")
+frame_progress.pack(fill="x", padx=5, pady=5, ipady=4) # B) 프레임 높이 조정 - ipad / B) 프레임 높이 조정 - ipad
+```
+
+## 3. 변경 코드 흐름
+
+```py
+from tkinter import *
+import tkinter.ttk as ttk
+
+root = Tk()
+root.title("Nado GUI")
+
+## A) 파일 프레임 간격 띄우기
+### 파일 프레임 (파일 추가, 선택 삭제)
+file_frame = Frame(root)
+file_frame.pack(fill="x", padx=5, pady=5) # x축 기준 간격 펼치기 / A) 간격 띄우기 - pad
+
+### 생략
+
+## A) 리스트 프레임 간격 띄우기
+### 리스트 프레임
+list_frame=Frame(root)
+list_frame.pack(fill="both", padx=5, pady=5)
+
+### 생략
+
+## B) 저장 경로 프레임 높이 조정
+### 저장 경로 프레임
+path_frame = LabelFrame(root, text="저장경로")
+path_frame.pack(fill="x", padx=5, pady=5, ipady=4) # 저장경로 x축 기준 간격 펼치기 / B) 프레임 높이 조정 - ipad
+
+## A) 저장 경로 내부 위젯 간격 띄우기
+txt_dest_path = Entry(path_frame, width=50)
+txt_dest_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # iapy: 높이 조정 / A) 간격 띄우기 - pad
+
+btn_dest_path = Button(path_frame, text="찾아보기", width=10)
+btn_dest_path.pack(side="right", padx=5, pady=5)
+
+### 생략
+
+## B) 옵션 프레임 높이 조정
+### 옵션 프레임
+frame_option = LabelFrame(root, text="옵션")
+frame_option.pack(padx=5, pady=5, ipady=4) # B) 프레임 높이 조정 - ipad
+
+## A) 옵션 위젯 간격 띄우기
+### 가로 넓이 라벨
+Label(frame_option, text="가로넓이", width=8).pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+### 생략
+
+cmb_width.pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+### 생략
+
+Label(frame_option, text="포맷", width=8).pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+### 생략
+
+cmb_format.pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+## B) 진행상황 프레임 높이 조정
+### 진행상황 Progress Bar
+frame_progress = LabelFrame(root, text="진행상황")
+frame_progress.pack(fill="x", padx=5, pady=5, ipady=4) # B) 프레임 높이 조정 - ipad / B) 프레임 높이 조정 - ipad
+
+p_var = DoubleVar()
+progress_bar = ttk.Progressbar(frame_progress, maximum=100, variable=p_var)
+progress_bar.pack(fill="x", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+## A) 실행 프레임과 버튼 간격 띄우기
+### 실행 프레임
+frame_run = Frame(root)
+frame_run.pack(fill="x", padx=5, pady=5)
+
+### 생략
+
+btn_close.pack(side="right", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+btn_start = Button(frame_run, padx=5, pady=5, text="시작", width=12)
+btn_start.pack(side="right", padx=5, pady=5) # A) 간격 띄우기 - pad
+
+root.resizable(False, False)
+root.mainloop()
+```
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
