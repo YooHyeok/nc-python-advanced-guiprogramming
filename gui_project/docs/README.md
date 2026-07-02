@@ -735,6 +735,126 @@ root.mainloop()
 <hr>
 <br>
 
+# 예제 4) 기본 기능 1 - 파일 추가와 선택 삭제
+## 목차
+
+1. A) 파일 추가
+2. B) 선택 삭제
+3. 변경 코드 흐름
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+파일 목록 영역에 실제 동작을 연결하는 단계이다.
+함수는 파일 프레임을 만든 뒤, 버튼을 생성하기 전에 정의한다.
+
+## 1. A) 파일 추가
+
+`filedialog.askopenfilenames()`는 여러 파일을 한 번에 선택할 수 있는 파일 선택 창을 띄운다.
+`title`은 파일 선택 창 제목, `filetypes`는 선택 가능한 파일 형식, `initialdir`은 처음 열릴 기본 경로를 의미한다.
+선택된 파일 경로들은 `Listbox`의 마지막 위치에 순서대로 추가한다.
+
+- 적용한 영역
+
+```py
+# 생략
+from tkinter import filedialog
+# 생략
+
+# 생략(파일 프레임)
+def add_file():
+  files = filedialog.askopenfilenames(title="이미지 파일을 선택하세요",
+                                      filetypes=(("PNG 파일", "*.png"), ("모든 파일", "*.*")),
+                                      initialdir="C:/"
+  )
+
+  for file in files:
+    list_file.insert(END, file)
+
+# 생략(선택 삭제 함수)
+
+btn_add_file = Button(file_frame, padx=5, pady=5, width=12, text="파일추가", command=add_file)
+btn_add_file.pack(side="left")
+# 생략(선택 삭제 버튼 정의 및 출력)
+```
+
+## 2. B) 선택 삭제
+
+`list_file.curselection()`은 현재 선택된 항목들의 인덱스를 반환한다.
+여러 항목을 앞에서부터 삭제하면 뒤 항목의 인덱스가 앞으로 당겨져 삭제 대상이 어긋날 수 있다.
+그래서 `reversed()`로 선택 인덱스를 뒤에서부터 순회한다.
+현재 코드에서는 삭제되는 인덱스를 `print(index)`로 확인하고, 이어서 `list_file.delete(index)`로 리스트박스에서 해당 항목을 제거한다.
+
+- 적용한 영역
+
+```py
+def add_file():
+  # 생략(파일 추가)
+
+def del_file():
+  for index in reversed(list_file.curselection()):
+    print(index)
+    list_file.delete(index)
+
+# 생략(파일 추가 버튼 배치)
+
+btn_add_file = Button(file_frame, padx=5, pady=5, width=12, text="파일추가", command=add_file)
+btn_add_file.pack(side="left")
+
+btn_del_file = Button(file_frame, padx=5, pady=5, width=12, text="선택 삭제", command=del_file)
+btn_del_file.pack(side="right")
+```
+
+## 3. 변경 코드 흐름
+
+```py
+from tkinter import *
+from tkinter import filedialog
+import tkinter.ttk as ttk
+
+root = Tk()
+root.title("Nado GUI")
+
+# 생략(파일 프레임)
+
+file_frame = Frame(root)
+file_frame.pack(fill="x", padx=5, pady=5)
+
+# 생략(파일 추가/선택 삭제 버튼 기능 정의)
+
+def add_file():
+  files = filedialog.askopenfilenames(title="이미지 파일을 선택하세요",
+                                      filetypes=(("PNG 파일", "*.png"), ("모든 파일", "*.*")),
+                                      initialdir="C:/"
+  )
+
+  for file in files:
+    list_file.insert(END, file)
+
+def del_file():
+  for index in reversed(list_file.curselection()):
+    print(index)
+    list_file.delete(index)
+
+btn_add_file = Button(file_frame, padx=5, pady=5, width=12, text="파일추가", command=add_file)
+btn_add_file.pack(side="left")
+
+btn_del_file = Button(file_frame, padx=5, pady=5, width=12, text="선택 삭제", command=del_file)
+btn_del_file.pack(side="right")
+
+# 생략(리스트 프레임 이하 레이아웃)
+
+root.resizable(False, False)
+root.mainloop()
+```
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
