@@ -53,9 +53,9 @@ opt_space=["없음", "좁게", "보통", "넓게"]
 cmb_space = ttk.Combobox(frame_option, state="readonly", values=opt_space, width=10)
 cmb_space.current(0)
 cmb_space.pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
-### 간격 옵션 라벨
 
 ## 파일 포맷 옵션
+### 파일 포맷 옵션 라벨
 Label(frame_option, text="포맷", width=8).pack(side="left", padx=5, pady=5) # A) 간격 띄우기 - pad
 opt_format=["PNG", "JPG", "BMP"]
 cmb_format = ttk.Combobox(frame_option, state="readonly", values=opt_format, width=10)
