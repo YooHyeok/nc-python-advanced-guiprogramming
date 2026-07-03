@@ -855,6 +855,137 @@ root.mainloop()
 <hr>
 <br>
 
+# 예제 5) 기본 기능 2 - 저장 경로와 시작 검증
+## 목차
+
+1. C) 저장 경로 선택
+2. D) 시작 전 옵션/입력값 확인
+3. 변경 코드 흐름
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+저장 경로 선택 버튼과 시작 버튼에 실제 동작을 연결하는 단계이다.
+저장 경로는 폴더 선택 창에서 받아와 `Entry`에 표시하고, 시작 버튼은 파일 목록과 저장 경로가 비어 있는지 먼저 확인한다.
+
+## 1. C) 저장 경로 선택
+
+`filedialog.askdirectory()`는 폴더 선택 창을 띄우고, 선택한 폴더 경로를 반환한다.
+폴더 선택을 취소하면 함수 실행을 중단하고, 정상적으로 선택한 경우에는 기존 입력값을 지운 뒤 새 경로를 넣는다.
+
+- 적용한 영역
+
+```py
+# 생략
+from tkinter import filedialog
+# 생략
+
+def browse_dest_path():
+  folder_selected = filedialog.askdirectory()
+  if folder_selected == None:
+    return
+
+  txt_dest_path.delete(0, END)
+  txt_dest_path.insert(0, folder_selected)
+
+# 생략(시작 함수)
+
+path_frame = LabelFrame(root, text="저장경로")
+path_frame.pack(fill="x", padx=5, pady=5, ipady=4)
+
+txt_dest_path = Entry(path_frame, width=50)
+txt_dest_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4)
+
+btn_dest_path = Button(path_frame, text="찾아보기", width=10, command=browse_dest_path)
+btn_dest_path.pack(side="right", padx=5, pady=5)
+```
+
+## 2. D) 시작 전 옵션/입력값 확인
+
+시작 버튼을 누르면 콤보박스에서 선택된 옵션 값을 확인한다.
+파일 목록이 비어 있거나 저장 경로가 비어 있으면 `messagebox.showwarning()`으로 경고창을 띄우고 작업을 중단한다.
+
+- 적용한 영역
+
+```py
+# 생략
+import tkinter.messagebox as msgbox
+
+# 생략(저장 경로 함수)
+
+def start():
+  print("가로넓이 : ", cmb_width.get())
+  print("간격 : ", cmb_space.get())
+  print("포맷 : ", cmb_format.get())
+
+  if list_file.size() == 0:
+    msgbox.showwarning("경고", "이미지 파일을 추가하세요")
+    return
+
+  if len(txt_dest_path.get()) == 0:
+    msgbox.showwarning("경고", "저장 경로를 선택하세요")
+    return
+
+# 생략(실행 프레임)
+
+btn_start = Button(frame_run, padx=5, pady=5, text="시작", width=12, command=start)
+btn_start.pack(side="right", padx=5, pady=5)
+```
+
+## 3. 변경 코드 흐름
+
+```py
+from tkinter import *
+from tkinter import filedialog
+import tkinter.ttk as ttk
+import tkinter.messagebox as msgbox
+
+root = Tk()
+root.title("Nado GUI")
+
+def browse_dest_path():
+  folder_selected = filedialog.askdirectory()
+  if folder_selected == None:
+    return
+
+  txt_dest_path.delete(0, END)
+  txt_dest_path.insert(0, folder_selected)
+
+def start():
+  print("가로넓이 : ", cmb_width.get())
+  print("간격 : ", cmb_space.get())
+  print("포맷 : ", cmb_format.get())
+
+  if list_file.size() == 0:
+    msgbox.showwarning("경고", "이미지 파일을 추가하세요")
+    return
+
+  if len(txt_dest_path.get()) == 0:
+    msgbox.showwarning("경고", "저장 경로를 선택하세요")
+    return
+
+# 생략(파일/리스트 프레임)
+
+btn_dest_path = Button(path_frame, text="찾아보기", width=10, command=browse_dest_path)
+btn_dest_path.pack(side="right", padx=5, pady=5)
+
+# 생략(옵션/진행상황/실행 프레임)
+
+btn_start = Button(frame_run, padx=5, pady=5, text="시작", width=12, command=start)
+btn_start.pack(side="right", padx=5, pady=5)
+
+root.resizable(False, False)
+root.mainloop()
+```
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
