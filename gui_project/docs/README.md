@@ -1106,6 +1106,192 @@
 <hr>
 <br>
 
+# 예제 7) 기본 기능 3 - 이미지 병합
+## 목차
+
+1. A) 추가 import와 기준 경로
+2. B) 이미지 병합 함수
+3. C) 파일/폴더 선택 기본 경로
+4. D) 시작 버튼에서 병합 실행
+5. 변경 코드 흐름
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+선택한 이미지 파일들을 세로 방향으로 이어 붙여 하나의 이미지 파일로 저장하는 단계이다.  
+이미지 처리를 위해 Pillow의 `Image`를 사용하고, 저장 경로를 만들기 위해 `os.path.join()`을 사용한다.  
+
+## 1. A) 추가 import와 기준 경로
+
+`Path`는 현재 파이썬 파일이 있는 디렉토리를 구하기 위해 사용한다.  
+`Image`는 이미지 파일을 열고, 새 이미지를 만들고, 이미지를 붙여 저장하기 위해 사용한다.  
+`os`는 저장 폴더와 파일명을 합쳐 최종 저장 경로를 만들기 위해 사용한다.  
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  # 생략
+  import tkinter.messagebox as msgbox
+  from pathlib import Path
+  from PIL import Image
+  import os
+
+  BASE_DIR = Path(__file__).resolve().parent
+
+  root = Tk()
+  root.title("Nado GUI")
+  ```
+
+## 2. B) 이미지 병합 함수
+
+`list_file.get(0, END)`로 리스트박스에 들어 있는 모든 파일 경로를 가져온다.  
+각 파일 경로를 `Image.open()`으로 열어 이미지 객체 목록을 만들고, 이미지들의 너비와 높이를 계산한다.  
+새 캔버스는 가장 넓은 이미지의 너비와 전체 이미지 높이의 합으로 만들고, 각 이미지를 위에서부터 차례대로 붙인다.  
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  # 생략(저장 경로 함수)
+
+  def merge_image():
+    print(list_file.get(0, END))
+    images = [Image.open(x) for x in list_file.get(0, END)]
+
+    widths = [x.size[0] for x in images]
+    heights = [x.size[1] for x in images]
+
+    max_width, total_height = max(widths), sum(heights)
+
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255))
+    y_offset = 0
+
+    for img in images:
+      result_img.paste(img, (0, y_offset))
+      y_offset += img.size[1]
+
+    dest_path = os.path.join(txt_dest_path.get(), "nado_photo.jpg")
+    result_img.save(dest_path)
+    msgbox.showinfo("알림", "작업이 완료되었습니다.")
+
+  # 생략(시작 함수)
+  ```
+
+## 3. C) 파일/폴더 선택 기본 경로
+
+`BASE_DIR`를 `initialdir`에 넣으면 파일 선택창과 폴더 선택창이 현재 `4.merge_images.py` 파일이 있는 디렉토리에서 열린다.  
+기존 절대 경로 `C:/`는 주석으로 남기고, 현재 파일 기준 경로를 사용하도록 바꾼다.  
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  def browse_dest_path():
+    folder_selected = filedialog.askdirectory(initialdir=BASE_DIR)
+    if folder_selected == None:
+      return
+
+    txt_dest_path.delete(0, END)
+    txt_dest_path.insert(0, folder_selected)
+
+  # 생략(파일 프레임)
+
+  def add_file():
+    files = filedialog.askopenfilenames(title="이미지 파일을 선택하세요",
+                                        filetypes=(("PNG 파일", "*.png"), ("모든 파일", "*.*")),
+                                        # initialdir="C:/"
+                                        initialdir=BASE_DIR
+    )
+
+    for file in files:
+      list_file.insert(END, file)
+  ```
+
+## 4. D) 시작 버튼에서 병합 실행
+
+시작 버튼을 누르면 먼저 파일 목록과 저장 경로를 검사한다.  
+필수 값이 모두 있으면 `merge_image()`를 호출해서 이미지 병합 작업을 실행한다.  
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  def start():
+    print("가로넓이 : ", cmb_width.get())
+    print("간격 : ", cmb_space.get())
+    print("포맷 : ", cmb_format.get())
+
+    if list_file.size() == 0:
+      msgbox.showwarning("경고", "이미지 파일을 추가하세요")
+      return
+
+    if len(txt_dest_path.get()) == 0:
+      msgbox.showwarning("경고", "저장 경로를 선택하세요")
+      return
+
+    merge_image()
+
+  # 생략(실행 프레임)
+
+  btn_start = Button(frame_run, padx=5, pady=5, text="시작", width=12, command=start)
+  btn_start.pack(side="right", padx=5, pady=5)
+  ```
+
+## 5. 변경 코드 흐름
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  from tkinter import *
+  from tkinter import filedialog
+  import tkinter.ttk as ttk
+  import tkinter.messagebox as msgbox
+  from pathlib import Path
+  from PIL import Image
+  import os
+
+  BASE_DIR = Path(__file__).resolve().parent
+
+  def browse_dest_path():
+    folder_selected = filedialog.askdirectory(initialdir=BASE_DIR)
+    if folder_selected == None:
+      return
+
+    txt_dest_path.delete(0, END)
+    txt_dest_path.insert(0, folder_selected)
+
+  def merge_image():
+    images = [Image.open(x) for x in list_file.get(0, END)]
+
+    widths = [x.size[0] for x in images]
+    heights = [x.size[1] for x in images]
+
+    max_width, total_height = max(widths), sum(heights)
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255))
+
+    y_offset = 0
+    for img in images:
+      result_img.paste(img, (0, y_offset))
+      y_offset += img.size[1]
+
+    dest_path = os.path.join(txt_dest_path.get(), "nado_photo.jpg")
+    result_img.save(dest_path)
+    msgbox.showinfo("알림", "작업이 완료되었습니다.")
+
+  def start():
+    if list_file.size() == 0:
+      msgbox.showwarning("경고", "이미지 파일을 추가하세요")
+      return
+
+    if len(txt_dest_path.get()) == 0:
+      msgbox.showwarning("경고", "저장 경로를 선택하세요")
+      return
+
+    merge_image()
+
+  # 생략(파일 추가/저장 경로/시작 버튼 연결)
+  ```
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
