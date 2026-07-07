@@ -1292,6 +1292,128 @@
 <hr>
 <br>
 
+# 예제 8) 기본 기능 4 - 진행상황 Progressbar 반영
+## 목차
+
+1. A) 반복문의 순서값 가져오기
+2. B) 진행률 계산
+3. C) Progressbar 값 갱신
+4. 변경 코드 흐름
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+이미지 병합 작업은 여러 이미지를 하나씩 붙이는 반복 작업이다.  
+따라서 현재 몇 번째 이미지까지 처리했는지를 알 수 있으면 전체 진행률을 계산할 수 있다.  
+여기서는 `enumerate()`로 현재 반복 순서를 가져오고, `DoubleVar`에 진행률 값을 넣어서 `Progressbar`에 반영한다.  
+
+기본 Progressbar 사용 방식은 [기본기 Progressbar 예제](../../gui_basic/9.progressbar.py)의 `p_var.set()`과 `progressbar.update()` 흐름을 프로젝트 코드에 적용한 것이다.  
+
+## 1. A) 반복문의 순서값 가져오기
+
+기존에는 이미지 객체만 반복했다.  
+진행률을 계산하려면 현재 몇 번째 이미지를 처리 중인지 알아야 하므로 `enumerate(images)`를 사용한다.  
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  # for img in images:
+  for idx, img in enumerate(images):
+    result_img.paste(img, (0, y_offset))
+    y_offset += img.size[1]
+  ```
+
+`enumerate(images)`는 반복할 때마다 인덱스와 값을 함께 반환한다.  
+여기서는 `idx`에 현재 이미지의 순번이 들어가고, `img`에는 실제 이미지 객체가 들어간다.  
+
+- `idx`: 현재 반복 인덱스. 0부터 시작
+- `img`: 현재 붙일 이미지 객체
+
+인덱스는 0부터 시작하므로 첫 번째 이미지를 처리할 때 `idx`는 0이다.  
+사람이 세는 기준의 처리 개수로 바꾸려면 `idx + 1`을 사용한다.  
+
+## 2. B) 진행률 계산
+
+진행률은 현재까지 처리한 이미지 개수를 전체 이미지 개수로 나눈 뒤 100을 곱해서 계산한다.  
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  progress = (idx + 1) / len(images) * 100
+  ```
+
+예를 들어 전체 이미지가 5장일 때 첫 번째 이미지를 처리하면 `(0 + 1) / 5 * 100`이므로 20%가 된다.  
+마지막 이미지를 처리하면 `(4 + 1) / 5 * 100`이므로 100%가 된다.  
+
+- `idx + 1`: 현재까지 처리한 이미지 개수
+- `len(images)`: 전체 이미지 개수
+- `* 100`: 0~1 사이 비율을 퍼센트 값으로 변환
+
+`Progressbar`를 만들 때 `maximum=100`으로 지정했기 때문에, 계산한 값도 0부터 100 사이의 퍼센트 값으로 맞춘다.  
+
+## 3. C) Progressbar 값 갱신
+
+계산한 진행률은 `p_var.set(progress)`로 `DoubleVar`에 넣는다.  
+`progress_bar`는 생성할 때 `variable=p_var`로 연결되어 있으므로, `p_var` 값이 바뀌면 진행바가 해당 값에 맞게 움직인다.  
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  p_var.set(progress)
+  progress_bar.update()
+  ```
+
+`merge_image()` 함수는 버튼 클릭 이벤트 안에서 실행된다.  
+이미지 병합 반복문이 끝날 때까지 Tkinter 화면 갱신이 바로 보이지 않을 수 있으므로, 반복 중에 `progress_bar.update()`를 호출해서 진행바 UI를 즉시 갱신한다.  
+
+- `p_var.set(progress)`: 진행률 값을 Tkinter 변수에 저장
+- `progress_bar.update()`: 진행바 화면을 즉시 다시 그림
+
+이 구조 덕분에 이미지가 한 장씩 병합될 때마다 진행상황이 20%, 40%, 60%처럼 단계적으로 반영된다.  
+
+## 4. 변경 코드 흐름
+
+- [4.merge_images.py](../4.merge_images.py)
+  ```py
+  def merge_image():
+    images = [Image.open(x) for x in list_file.get(0, END)]
+
+    widths = [x.size[0] for x in images]
+    heights = [x.size[1] for x in images]
+
+    max_width, total_height = max(widths), sum(heights)
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255))
+
+    y_offset = 0
+    # for img in images:
+    for idx, img in enumerate(images):
+      result_img.paste(img, (0, y_offset))
+      y_offset += img.size[1]
+
+      # progress 계산(percent)
+      progress = (idx + 1) / len(images) * 100
+      p_var.set(progress)
+      progress_bar.update()
+
+    dest_path = os.path.join(txt_dest_path.get(), "nado_photo.jpg")
+    result_img.save(dest_path)
+    msgbox.showinfo("알림", "작업이 완료되었습니다.")
+  ```
+
+진행상황 반영 흐름은 아래 순서로 볼 수 있다.  
+
+1. `enumerate(images)`로 현재 이미지 순번과 이미지 객체를 함께 가져온다.  
+2. `result_img.paste()`로 현재 이미지를 결과 이미지에 붙인다.  
+3. `y_offset`에 현재 이미지 높이를 더해서 다음 이미지가 붙을 위치를 준비한다.  
+4. `(idx + 1) / len(images) * 100`으로 현재 진행률을 계산한다.  
+5. `p_var.set(progress)`로 진행률 값을 변경한다.  
+6. `progress_bar.update()`로 변경된 값을 화면에 바로 반영한다.  
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 
@@ -1301,7 +1423,6 @@
 <details>
 <summary>접기/펼치기</summary>
 <br>
-
 
 </details>
 <br>
