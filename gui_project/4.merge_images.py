@@ -7,13 +7,15 @@ from PIL import Image # 추가
 import os # 추가
 
 BASE_DIR = Path(__file__).resolve().parent # 현재 파일이 있는 디렉토리
+SAMPLE_DIR = BASE_DIR / "sample" # 샘플 이미지 디렉토리
+SAVE_DIR = BASE_DIR / "save" # 샘플 이미지 디렉토리
 
 root = Tk()
 root.title("Nado GUI")
 
 # 저장경로 (폴더)
 def browse_dest_path():
-  folder_selected = filedialog.askdirectory(initialdir=BASE_DIR) # 폴더 선택 후 반환받은 폴더 경로 저장
+  folder_selected = filedialog.askdirectory(initialdir=SAVE_DIR) # 폴더 선택 후 반환받은 폴더 경로 저장
   if folder_selected == None: # 사용자가 취소를 누를 때
     return
   # print(folder_selected)
@@ -32,9 +34,15 @@ def merge_image():
   # 스케치북 준비
   result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255)) # 배경 흰색
   y_offset = 0 # 이미지가 첨부될 Y 위치(이미지가 첨부될때마다 동적으로 변경됨)
-  for img in images:
+  # for img in images:
+  for idx, img in enumerate(images):
     result_img.paste(img, (0, y_offset))
     y_offset += img.size[1] # 현재 추가된 image의 높이값을 누적
+
+    # progress 계산(percent)
+    progress = (idx + 1) / len(images) * 100
+    p_var.set(progress)
+    progress_bar.update()
 
   dest_path = os.path.join(txt_dest_path.get(), "nado_photo.jpg")
   result_img.save(dest_path)
@@ -55,7 +63,7 @@ def start():
   if len(txt_dest_path.get()) == 0:
     msgbox.showwarning("경고", "저장 경로를 선택하세요")
     return
-  # A) 이미지 통합 작업
+  # 이미지 통합 작업
   merge_image()
 
 
@@ -70,7 +78,7 @@ def add_file():
   files = filedialog.askopenfilenames(title="이미지 파일을 선택하세요",
                                       filetypes=(("PNG 파일", "*.png"), ("모든 파일", "*.*")), # 튜플형태로 여러 파일 타입 수용 
                                       # initialdir="C:/" # 기본 경로
-                                      initialdir=BASE_DIR # 현재 파일이 있는 디렉토리
+                                      initialdir=SAMPLE_DIR # 현재 파일 기준 sample 디렉토리
   ) 
   # 사용자가 선택한 파일 목록에 추가
   for file in files:
