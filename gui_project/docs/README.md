@@ -1414,15 +1414,151 @@
 <hr>
 <br>
 
-# 예제 ) 
+# 예제 9) 리팩토링 - zip과 unpacking으로 이미지 크기 분리
 ## 목차
 
+1. A) 기존 이미지 크기 추출 방식
+2. B) zip() 기본 동작
+3. C) zip(*) unpacking
+4. D) 이미지 크기 분리 코드에 적용
+5. 변경 코드 흐름
 
 
 <br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
+
+이미지 병합을 하려면 전체 이미지 중 가장 넓은 가로값과 모든 이미지의 세로값 합계가 필요하다.  
+기존에는 너비 목록과 높이 목록을 각각 리스트 컴프리헨션으로 만들었다.  
+이번 리팩토링에서는 `Image.size`가 `(width, height)` 튜플을 반환한다는 점을 이용해서, `zip(*)`으로 가로와 세로 값을 한 번에 분리한다.  
+
+## 1. A) 기존 이미지 크기 추출 방식
+
+기존 코드는 이미지 목록을 두 번 순회해서 너비와 높이를 각각 가져왔다.  
+
+- [5.zip_unpacking.py](../5.zip_unpacking.py)
+  ```py
+  def merge_image():
+    # 생략
+
+    size → size[0] : width, size[1] : height
+    widths = [x.size[0] for x in images]
+    heights = [x.size[1] for x in images]
+
+
+    # 생략
+  ```
+
+`x.size`는 `(width, height)` 형태의 튜플이다.  
+따라서 `x.size[0]`은 가로, `x.size[1]`은 세로를 의미한다.  
+
+- `widths`: 모든 이미지의 가로 길이 목록
+- `heights`: 모든 이미지의 세로 길이 목록
+
+이 방식도 동작에는 문제가 없지만, 같은 이미지 목록을 기준으로 가로와 세로를 나누는 작업이므로 `zip(*)`으로 더 간단하게 표현할 수 있다.  
+
+## 2. B) zip() 기본 동작
+
+`zip()`은 여러 리스트에서 같은 인덱스에 있는 값끼리 묶어준다.  
+
+- [5.practice_zip.py](../5.practice_zip.py)
+  ```py
+  kor = ["사과", "바나나", "오렌지"]
+  eng = ["apple", "banana", "orange"]
+
+  merged = list(zip(kor, eng))
+  print("merged = ", merged)
+  ```
+
+실행 결과는 아래처럼 같은 위치의 값들이 튜플로 묶인다.  
+
+```py
+[('사과', 'apple'), ('바나나', 'banana'), ('오렌지', 'orange')]
+```
+
+이미지 크기도 같은 구조로 볼 수 있다.  
+예를 들어 이미지 크기 목록이 `[(640, 480), (800, 600), (1024, 768)]`이라면, 각 튜플의 첫 번째 값은 가로이고 두 번째 값은 세로이다.  
+
+## 3. C) zip(*) unpacking
+
+이미 묶여 있는 튜플 목록을 다시 항목별 그룹으로 나누고 싶을 때 `zip(*데이터)`를 사용한다.  
+여기서 `*`는 리스트 안의 요소들을 풀어서 `zip()`에 전달하는 unpacking 역할을 한다.  
+
+- [5.practice_zip.py](../5.practice_zip.py)
+  ```py
+  kor2, eng2 = zip(*merged)
+  print("kor2 = ", kor2)
+  print("eng2 = ", eng2)
+  ```
+
+`merged`가 `[('사과', 'apple'), ('바나나', 'banana'), ('오렌지', 'orange')]`라면, `zip(*merged)`는 첫 번째 값들끼리, 두 번째 값들끼리 다시 묶는다.  
+
+```py
+kor2 = ('사과', '바나나', '오렌지')
+eng2 = ('apple', 'banana', 'orange')
+```
+
+즉, `zip()`은 같은 위치의 값들을 묶고, `zip(*)`은 이미 묶인 값들을 위치 기준으로 다시 분리한다.  
+
+## 4. D) 이미지 크기 분리 코드에 적용
+
+이미지 객체의 `size` 값은 `(width, height)` 튜플이다.  
+따라서 `[x.size for x in images]`는 이미지 크기 튜플 목록을 만든다.  
+
+- [5.zip_unpacking.py](../5.zip_unpacking.py)
+  ```py
+  widths, heights = zip(*[x.size for x in images])
+  ```
+
+예를 들어 이미지 크기 목록이 아래와 같다면,
+
+```py
+[(640, 480), (800, 600), (1024, 768)]
+```
+
+`zip(*)` 적용 후에는 아래처럼 분리된다.  
+
+```py
+widths = (640, 800, 1024)
+heights = (480, 600, 768)
+```
+
+이렇게 분리한 뒤 기존과 동일하게 가장 큰 가로 길이와 전체 세로 길이를 계산한다.  
+
+- [5.zip_unpacking.py](../5.zip_unpacking.py)
+  ```py
+  max_width, total_height = max(widths), sum(heights)
+  ```
+
+- `max(widths)`: 결과 이미지의 가로 길이
+- `sum(heights)`: 결과 이미지의 세로 길이
+
+## 5. 변경 코드 흐름
+
+- [5.zip_unpacking.py](../5.zip_unpacking.py)
+  ```py
+  def merge_image():
+    # 생략
+
+    # size → size[0] : width, size[1] : height
+    # widths = [x.size[0] for x in images]
+    # heights = [x.size[1] for x in images]
+
+    # zip(*)을 이용해 이미지 배열에서 가로·세로 크기를 한 번에 분리 및 추출
+    widths, heights = zip(*[x.size for x in images])
+
+    # 생략
+  ```
+
+리팩토링 흐름은 아래 순서로 볼 수 있다.  
+
+1. `images`에 이미지 객체 목록을 저장한다.  
+2. `[x.size for x in images]`로 `(width, height)` 튜플 목록을 만든다.  
+3. `zip(*)`으로 각 튜플의 첫 번째 값들은 `widths`, 두 번째 값들은 `heights`로 분리한다.  
+4. `max(widths)`로 가장 넓은 이미지의 가로 길이를 구한다.  
+5. `sum(heights)`로 전체 이미지 높이 합계를 구한다.  
+6. 계산한 크기로 결과 이미지를 만들고 병합 작업을 이어간다.  
 
 </details>
 <br>
