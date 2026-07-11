@@ -1564,3 +1564,211 @@ heights = (480, 600, 768)
 <br>
 <hr>
 <br>
+
+# 예제 10) 옵션 적용 1 - 가로넓이 기준 이미지 크기 계산
+## 목차
+
+1. A) 기존 크기 계산 방식
+2. B) 가로넓이 옵션값 가져오기
+3. C) 원본 유지와 지정 너비 분기
+4. D) 비율에 맞는 세로 높이 계산
+5. E) 계산된 크기 기준으로 캔버스 만들기
+6. 변경 코드 흐름
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+이전 단계에서는 이미지들의 원본 크기를 기준으로 결과 이미지의 전체 크기를 계산했다.  
+이번 단계에서는 사용자가 선택한 `가로넓이` 옵션을 반영해서, 이미지가 병합될 때 사용할 크기를 먼저 계산한다.  
+
+즉, 기존에는 `x.size`를 그대로 사용했다면, 이제는 `원본 유지`인지, `1024`, `800`, `640`처럼 지정된 너비인지에 따라 `imgage_sizes` 목록을 새로 만든다.  
+
+## 1. A) 기존 크기 계산 방식
+
+`5.zip_unpacking.py`에서는 이미지 객체의 원본 크기인 `x.size`를 그대로 사용했다.  
+`x.size`는 `(width, height)` 튜플이므로, `zip(*)`으로 모든 이미지의 가로와 세로를 한 번에 분리했다.  
+
+- [5.zip_unpacking.py](../5.zip_unpacking.py)
+  ```py
+  def merge_image():
+    # 생략
+    images = [Image.open(x) for x in list_file.get(0, END)] # 이미지 객체 저장
+    widths, heights = zip(*[x.size for x in images])
+
+    max_width, total_height = max(widths), sum(heights)
+    # 생략
+  ```
+
+이 방식은 모든 이미지를 원본 크기 그대로 붙이는 경우에 맞다.  
+결과 이미지의 가로는 원본 이미지들 중 가장 넓은 값이 되고, 세로는 원본 이미지들의 높이를 모두 더한 값이 된다.  
+
+## 2. B) 가로넓이 옵션값 가져오기
+
+`6.apply_options.py`에서는 먼저 콤보박스에서 사용자가 선택한 가로넓이 옵션값을 가져온다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    # 가로 넓이
+    img_width = cmb_width.get()
+    if img_width == "원본 유지":
+      img_width = -1 # -1일 때는 원본 기준
+    else:
+      img_width = int(img_width)
+
+    # 생략
+  ```
+
+`cmb_width.get()`으로 가져온 값은 문자열이다.  
+따라서 `"1024"`, `"800"`, `"640"`처럼 숫자 형태의 문자열은 `int()`로 정수 변환해야 이미지 크기 계산에 사용할 수 있다.  
+
+- `"원본 유지"`: 원본 크기를 그대로 사용
+- `"1024"`, `"800"`, `"640"`: 선택한 가로 길이로 이미지 크기 재계산
+
+## 3. C) 원본 유지와 지정 너비 분기
+
+`img_width`가 `-1`이면 원본 크기를 사용하고, `-1`보다 크면 사용자가 선택한 너비를 기준으로 새 크기를 계산한다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    images = [Image.open(x) for x in list_file.get(0, END)] # 이미지 객체 저장
+
+    # 이미지 사이즈 리스트에 넣어 하나씩 처리
+    imgage_sizes = [] # (width1, height1), (width2, height2)
+    if img_width > -1:
+      # width 값 변경
+      imgage_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+      print("image_sizes = ", imgage_sizes)
+    else:
+      # 원본 사이즈 사용
+      imgage_sizes = [(x.size[0], x.size[1]) for x in images]
+
+    # 생략
+  ```
+
+기존에는 `x.size`에서 바로 가로와 세로를 꺼냈지만, 이제는 먼저 `imgage_sizes`라는 별도 목록을 만든다.  
+이 목록에는 최종 계산에 사용할 `(width, height)` 값들이 들어간다.  
+
+- 원본 유지: `(원본 width, 원본 height)`
+- 너비 지정: `(선택한 width, 비율로 계산한 height)`
+
+## 4. D) 비율에 맞는 세로 높이 계산
+
+이미지의 가로만 강제로 바꾸면 세로도 같은 비율로 바뀌어야 이미지가 찌그러지지 않는다.  
+그래서 원본 가로/세로 비율을 이용해서 변경될 세로 높이를 계산한다.  
+
+```py
+변경 height = 변경 width * 원본 height / 원본 width
+```
+
+코드에서는 아래 부분이 이 계산을 담당한다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    imgage_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+    # 생략
+  ```
+
+예를 들어 원본 이미지 크기가 `(500, 300)`이고 사용자가 가로넓이를 `800`으로 선택했다면, 세로 높이는 아래처럼 계산된다.  
+
+```py
+new_height = int(800 * 300 / 500)
+```
+
+결과는 `480`이므로, 해당 이미지는 계산상 `(800, 480)` 크기로 다뤄진다.  
+`Image.new()`의 크기값은 정수여야 하므로 계산 결과를 `int()`로 감싼다.  
+
+## 5. E) 계산된 크기 기준으로 캔버스 만들기
+
+이미지 크기 목록을 만든 뒤에는 기존과 같은 방식으로 `zip(*)`을 사용한다.  
+차이점은 `x.size`가 아니라 옵션이 반영된 `imgage_sizes`를 기준으로 분리한다는 점이다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    # size → size[0] : width, size[1] : height
+    # zip(*)을 이용해 이미지 배열에서 가로·세로 크기를 한 번에 분리 및 추출
+    # widths, heights = zip(*[x.size for x in images]) 
+    widths, heights = zip(*(imgage_sizes)) 
+    print("widths = ", widths)
+    print("heights = ", heights)
+
+    max_width, total_height = max(widths), sum(heights)
+    # 스케치북 준비
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255)) # 배경 흰색
+    # 생략
+  ```
+
+이전 단계와 비교하면 기준 데이터가 바뀌었다.  
+
+- 기존: `zip(*[x.size for x in images])`
+- 변경: `zip(*(imgage_sizes))`
+
+따라서 결과 캔버스의 크기도 원본 이미지 기준이 아니라, 옵션이 적용된 이미지 크기 기준으로 계산된다.  
+
+## 6. 변경 코드 흐름
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    print("가로넓이 : ", cmb_width.get())
+    print("간격 : ", cmb_space.get())
+    print("포맷 : ", cmb_format.get())
+
+    # 가로 넓이
+    img_width = cmb_width.get()
+    if img_width == "원본 유지":
+      img_width = -1 # -1일 때는 원본 기준
+    else:
+      img_width = int(img_width)
+
+    # 생략
+    images = [Image.open(x) for x in list_file.get(0, END)] # 이미지 객체 저장
+
+    # 이미지 사이즈 리스트에 넣어 하나씩 처리
+    imgage_sizes = [] # (width1, height1), (width2, height2)
+    if img_width > -1:
+      # width 값 변경
+      imgage_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+      print("image_sizes = ", imgage_sizes)
+    else:
+      # 원본 사이즈 사용
+      imgage_sizes = [(x.size[0], x.size[1]) for x in images]
+
+    # size → size[0] : width, size[1] : height
+    # zip(*)을 이용해 이미지 배열에서 가로·세로 크기를 한 번에 분리 및 추출
+    # widths, heights = zip(*[x.size for x in images]) 
+    widths, heights = zip(*(imgage_sizes)) 
+    print("widths = ", widths)
+    print("heights = ", heights)
+
+    max_width, total_height = max(widths), sum(heights)
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255))
+
+    # 생략
+  ```
+
+옵션 적용 흐름은 아래 순서로 볼 수 있다.  
+
+1. `cmb_width.get()`으로 사용자가 선택한 가로넓이 옵션을 가져온다.  
+2. `"원본 유지"`이면 `img_width`를 `-1`로 두고 원본 크기를 사용하도록 표시한다.  
+3. 숫자 옵션이면 `int(img_width)`로 정수 변환한다.  
+4. 이미지 목록을 열고, 병합에 사용할 크기 목록 `imgage_sizes`를 만든다.  
+5. 원본 유지일 때는 `x.size` 값을 그대로 `imgage_sizes`에 넣는다.  
+6. 너비 지정일 때는 선택한 가로값과 비율로 계산한 세로값을 `imgage_sizes`에 넣는다.  
+7. `zip(*(imgage_sizes))`로 가로 목록과 세로 목록을 분리한다.  
+8. `max(widths)`, `sum(heights)`로 결과 이미지 캔버스 크기를 계산한다.  
+
+</details>
+<br>
+<hr>
+<br>
