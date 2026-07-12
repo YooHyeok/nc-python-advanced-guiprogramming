@@ -55,7 +55,7 @@ def merge_image():
   images = [Image.open(x) for x in list_file.get(0, END)] # 이미지 객체 저장
 
   # 이미지 사이즈 리스트에 넣어 하나씩 처리
-  imgage_sizes = [] # (width1, height1), (width2, height2)
+  image_sizes = [] # (width1, height1), (width2, height2)
   if img_width > -1:
     # width 값 변경
     """
@@ -72,34 +72,44 @@ def merge_image():
     x' = img_width # 해당 값으로 변경해야 함
     y' = x'y / x = (img_width * size[1]) / size[0]
     """
-    imgage_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
-    print("image_sizes = ", imgage_sizes)
+    image_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+    print("image_sizes = ", image_sizes)
   else:
     # 원본 사이즈 사용
-    imgage_sizes = [(x.size[0], x.size[1]) for x in images]
+    image_sizes = [(x.size[0], x.size[1]) for x in images]
   
 
   # size → size[0] : width, size[1] : height
   # zip(*)을 이용해 이미지 배열에서 가로·세로 크기를 한 번에 분리 및 추출
   # widths, heights = zip(*[x.size for x in images]) 
-  widths, heights = zip(*(imgage_sizes)) 
+  widths, heights = zip(*(image_sizes)) 
   print("widths = ", widths)
   print("heights = ", heights)
 
   max_width, total_height = max(widths), sum(heights)
   # 스케치북 준비
+  
+  if img_space > 0: # 이미지 간격 옵션 적용
+    total_height += (img_space * (len(images) - 1))
+
   result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255)) # 배경 흰색
   y_offset = 0 # 이미지가 첨부될 Y 위치(이미지가 첨부될때마다 동적으로 변경됨)
   for idx, img in enumerate(images):
+    # width가 원본유지가 아닐 경우 이미지 크기 조정
+    if img_width > -1:
+      img = img.resize(image_sizes[idx])
+
     result_img.paste(img, (0, y_offset))
-    y_offset += img.size[1] # 현재 추가된 image의 높이값을 누적
+    y_offset += (img.size[1] + img_space) # 현재 추가된 image의 높이값을 누적 + 사용자가 지정한 간격
 
     # progress 계산(percent)
     progress = (idx + 1) / len(images) * 100
     p_var.set(progress)
     progress_bar.update()
 
-  dest_path = os.path.join(txt_dest_path.get(), "nado_photo.jpg")
+  # 포맷 옵션 처리
+  file_name = "nado_photo." + img_format
+  dest_path = os.path.join(txt_dest_path.get(), file_name)
   result_img.save(dest_path)
   msgbox.showinfo("알림", "작업이 완료되었습니다.")
 
