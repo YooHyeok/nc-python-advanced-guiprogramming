@@ -1584,7 +1584,7 @@ heights = (480, 600, 768)
 이전 단계에서는 이미지들의 원본 크기를 기준으로 결과 이미지의 전체 크기를 계산했다.  
 이번 단계에서는 사용자가 선택한 `가로넓이` 옵션을 반영해서, 이미지가 병합될 때 사용할 크기를 먼저 계산한다.  
 
-즉, 기존에는 `x.size`를 그대로 사용했다면, 이제는 `원본 유지`인지, `1024`, `800`, `640`처럼 지정된 너비인지에 따라 `imgage_sizes` 목록을 새로 만든다.  
+즉, 기존에는 `x.size`를 그대로 사용했다면, 이제는 `원본 유지`인지, `1024`, `800`, `640`처럼 지정된 너비인지에 따라 `image_sizes` 목록을 새로 만든다.  
 
 ## 1. A) 기존 크기 계산 방식
 
@@ -1640,19 +1640,19 @@ heights = (480, 600, 768)
     images = [Image.open(x) for x in list_file.get(0, END)] # 이미지 객체 저장
 
     # 이미지 사이즈 리스트에 넣어 하나씩 처리
-    imgage_sizes = [] # (width1, height1), (width2, height2)
+    image_sizes = [] # (width1, height1), (width2, height2)
     if img_width > -1:
       # width 값 변경
-      imgage_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
-      print("image_sizes = ", imgage_sizes)
+      image_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+      print("image_sizes = ", image_sizes)
     else:
       # 원본 사이즈 사용
-      imgage_sizes = [(x.size[0], x.size[1]) for x in images]
+      image_sizes = [(x.size[0], x.size[1]) for x in images]
 
     # 생략
   ```
 
-기존에는 `x.size`에서 바로 가로와 세로를 꺼냈지만, 이제는 먼저 `imgage_sizes`라는 별도 목록을 만든다.  
+기존에는 `x.size`에서 바로 가로와 세로를 꺼냈지만, 이제는 먼저 `image_sizes`라는 별도 목록을 만든다.  
 이 목록에는 최종 계산에 사용할 `(width, height)` 값들이 들어간다.  
 
 - 원본 유지: `(원본 width, 원본 height)`
@@ -1673,7 +1673,7 @@ heights = (480, 600, 768)
   ```py
   def merge_image():
     # 생략
-    imgage_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+    image_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
     # 생략
   ```
 
@@ -1689,7 +1689,7 @@ new_height = int(800 * 300 / 500)
 ## 5. E) 계산된 크기 기준으로 캔버스 만들기
 
 이미지 크기 목록을 만든 뒤에는 기존과 같은 방식으로 `zip(*)`을 사용한다.  
-차이점은 `x.size`가 아니라 옵션이 반영된 `imgage_sizes`를 기준으로 분리한다는 점이다.  
+차이점은 `x.size`가 아니라 옵션이 반영된 `image_sizes`를 기준으로 분리한다는 점이다.  
 
 - [6.apply_options.py](../6.apply_options.py)
   ```py
@@ -1698,7 +1698,7 @@ new_height = int(800 * 300 / 500)
     # size → size[0] : width, size[1] : height
     # zip(*)을 이용해 이미지 배열에서 가로·세로 크기를 한 번에 분리 및 추출
     # widths, heights = zip(*[x.size for x in images]) 
-    widths, heights = zip(*(imgage_sizes)) 
+    widths, heights = zip(*(image_sizes)) 
     print("widths = ", widths)
     print("heights = ", heights)
 
@@ -1711,7 +1711,7 @@ new_height = int(800 * 300 / 500)
 이전 단계와 비교하면 기준 데이터가 바뀌었다.  
 
 - 기존: `zip(*[x.size for x in images])`
-- 변경: `zip(*(imgage_sizes))`
+- 변경: `zip(*(image_sizes))`
 
 따라서 결과 캔버스의 크기도 원본 이미지 기준이 아니라, 옵션이 적용된 이미지 크기 기준으로 계산된다.  
 
@@ -1735,19 +1735,19 @@ new_height = int(800 * 300 / 500)
     images = [Image.open(x) for x in list_file.get(0, END)] # 이미지 객체 저장
 
     # 이미지 사이즈 리스트에 넣어 하나씩 처리
-    imgage_sizes = [] # (width1, height1), (width2, height2)
+    image_sizes = [] # (width1, height1), (width2, height2)
     if img_width > -1:
       # width 값 변경
-      imgage_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
-      print("image_sizes = ", imgage_sizes)
+      image_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+      print("image_sizes = ", image_sizes)
     else:
       # 원본 사이즈 사용
-      imgage_sizes = [(x.size[0], x.size[1]) for x in images]
+      image_sizes = [(x.size[0], x.size[1]) for x in images]
 
     # size → size[0] : width, size[1] : height
     # zip(*)을 이용해 이미지 배열에서 가로·세로 크기를 한 번에 분리 및 추출
     # widths, heights = zip(*[x.size for x in images]) 
-    widths, heights = zip(*(imgage_sizes)) 
+    widths, heights = zip(*(image_sizes)) 
     print("widths = ", widths)
     print("heights = ", heights)
 
@@ -1762,11 +1762,204 @@ new_height = int(800 * 300 / 500)
 1. `cmb_width.get()`으로 사용자가 선택한 가로넓이 옵션을 가져온다.  
 2. `"원본 유지"`이면 `img_width`를 `-1`로 두고 원본 크기를 사용하도록 표시한다.  
 3. 숫자 옵션이면 `int(img_width)`로 정수 변환한다.  
-4. 이미지 목록을 열고, 병합에 사용할 크기 목록 `imgage_sizes`를 만든다.  
-5. 원본 유지일 때는 `x.size` 값을 그대로 `imgage_sizes`에 넣는다.  
-6. 너비 지정일 때는 선택한 가로값과 비율로 계산한 세로값을 `imgage_sizes`에 넣는다.  
-7. `zip(*(imgage_sizes))`로 가로 목록과 세로 목록을 분리한다.  
+4. 이미지 목록을 열고, 병합에 사용할 크기 목록 `image_sizes`를 만든다.  
+5. 원본 유지일 때는 `x.size` 값을 그대로 `image_sizes`에 넣는다.  
+6. 너비 지정일 때는 선택한 가로값과 비율로 계산한 세로값을 `image_sizes`에 넣는다.  
+7. `zip(*(image_sizes))`로 가로 목록과 세로 목록을 분리한다.  
 8. `max(widths)`, `sum(heights)`로 결과 이미지 캔버스 크기를 계산한다.  
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 11) 옵션 적용 2 - 리사이즈, 간격, 포맷 반영
+## 목차
+
+1. A) 이미지 크기 목록 변수명 정리
+2. B) 간격 옵션을 결과 높이에 반영
+3. C) 이미지 붙이기 전에 리사이즈 적용
+4. D) 이미지 사이 간격만큼 y 위치 이동
+5. E) 포맷 옵션을 저장 파일명에 반영
+6. 변경 코드 흐름
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+이전 단계에서는 가로넓이 옵션을 기준으로 `image_sizes`를 계산하고, 그 값을 이용해 결과 이미지 캔버스 크기를 정했다.  
+이번 단계에서는 계산된 옵션값을 실제 이미지 병합 과정에 반영한다.  
+
+즉, 캔버스 크기만 옵션 기준으로 계산하는 것이 아니라, 실제로 붙이는 이미지도 리사이즈하고, 이미지 사이 간격도 적용하고, 저장 파일 확장자도 선택한 포맷에 맞춘다.  
+
+## 1. A) 이미지 크기 목록 변수명 정리
+
+이미지 크기 목록 변수명이 `imgage_sizes`에서 `image_sizes`로 정리되었다.  
+역할은 동일하게, 병합에 사용할 각 이미지의 최종 `(width, height)` 값을 저장한다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    # 이미지 사이즈 리스트에 넣어 하나씩 처리
+    image_sizes = [] # (width1, height1), (width2, height2)
+    if img_width > -1:
+      # width 값 변경
+      image_sizes = [(int(img_width), int(img_width * x.size[1] / x.size[0])) for x in images]
+      print("image_sizes = ", image_sizes)
+    else:
+      # 원본 사이즈 사용
+      image_sizes = [(x.size[0], x.size[1]) for x in images]
+
+    # 생략
+  ```
+
+이후 가로/세로 크기를 분리할 때도 `image_sizes`를 기준으로 한다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    widths, heights = zip(*(image_sizes)) 
+    print("widths = ", widths)
+    print("heights = ", heights)
+    # 생략
+  ```
+
+## 2. B) 간격 옵션을 결과 높이에 반영
+
+이미지 사이에 간격을 넣으려면 결과 이미지의 전체 세로 높이도 그만큼 늘어나야 한다.  
+간격은 이미지 사이에만 들어가므로, 이미지가 `n`장이라면 간격은 `n - 1`번 생긴다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    max_width, total_height = max(widths), sum(heights)
+    # 스케치북 준비
+    
+    if img_space > 0: # 이미지 간격 옵션 적용
+      total_height += (img_space * (len(images) - 1))
+
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255)) # 배경 흰색
+    # 생략
+  ```
+
+예를 들어 이미지가 4장이고 간격 옵션이 `좁게`라서 `img_space`가 30이라면, 간격은 3번 들어간다.  
+따라서 전체 높이에 `30 * (4 - 1)`만큼 추가한다.  
+
+## 3. C) 이미지 붙이기 전에 리사이즈 적용
+
+가로넓이 옵션에서 `1024`, `800`, `640`처럼 특정 너비를 선택한 경우, 실제로 붙일 이미지도 계산된 크기로 바꿔야 한다.  
+그래서 `paste()` 전에 `resize()`를 호출한다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    for idx, img in enumerate(images):
+      # width가 원본유지가 아닐 경우 이미지 크기 조정
+      if img_width > -1:
+        img = img.resize(image_sizes[idx])
+
+      result_img.paste(img, (0, y_offset))
+      # 생략
+  ```
+
+`image_sizes[idx]`는 현재 이미지가 변경되어야 할 `(width, height)` 값이다.  
+`img_width`가 `-1`이면 `원본 유지`이므로 리사이즈하지 않고 원본 이미지를 그대로 붙인다.  
+
+## 4. D) 이미지 사이 간격만큼 y 위치 이동
+
+이미지를 하나 붙인 뒤에는 다음 이미지가 붙을 y 위치를 아래로 이동시켜야 한다.  
+기존에는 현재 이미지의 높이만큼만 이동했지만, 이제는 사용자가 선택한 간격도 함께 더한다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    y_offset = 0 # 이미지가 첨부될 Y 위치(이미지가 첨부될때마다 동적으로 변경됨)
+    for idx, img in enumerate(images):
+      # 생략
+      result_img.paste(img, (0, y_offset))
+      y_offset += (img.size[1] + img_space) # 현재 추가된 image의 높이값을 누적 + 사용자가 지정한 간격
+
+      # 생략
+  ```
+
+`img.size[1]`은 현재 붙인 이미지의 높이다.  
+여기에 `img_space`를 더하면 다음 이미지가 현재 이미지 바로 아래가 아니라, 지정한 간격만큼 떨어진 위치에 붙는다.  
+
+## 5. E) 포맷 옵션을 저장 파일명에 반영
+
+기존에는 결과 파일명이 항상 `nado_photo.jpg`였다.  
+이제는 사용자가 선택한 포맷 옵션을 확장자에 반영한다.  
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    # 포맷 옵션 처리
+    file_name = "nado_photo." + img_format
+    dest_path = os.path.join(txt_dest_path.get(), file_name)
+    result_img.save(dest_path)
+    msgbox.showinfo("알림", "작업이 완료되었습니다.")
+  ```
+
+`img_format`은 앞에서 `cmb_format.get().lower()`로 만든 값이다.  
+따라서 콤보박스에서 `PNG`를 선택하면 `png`, `JPG`를 선택하면 `jpg`, `BMP`를 선택하면 `bmp`가 된다.  
+
+- `PNG` 선택: `nado_photo.png`
+- `JPG` 선택: `nado_photo.jpg`
+- `BMP` 선택: `nado_photo.bmp`
+
+## 6. 변경 코드 흐름
+
+- [6.apply_options.py](../6.apply_options.py)
+  ```py
+  def merge_image():
+    # 생략
+    widths, heights = zip(*(image_sizes)) 
+
+    max_width, total_height = max(widths), sum(heights)
+    # 스케치북 준비
+    
+    if img_space > 0: # 이미지 간격 옵션 적용
+      total_height += (img_space * (len(images) - 1))
+
+    result_img = Image.new("RGB", (max_width, total_height), (255, 255, 255)) # 배경 흰색
+    y_offset = 0 # 이미지가 첨부될 Y 위치(이미지가 첨부될때마다 동적으로 변경됨)
+    for idx, img in enumerate(images):
+      # width가 원본유지가 아닐 경우 이미지 크기 조정
+      if img_width > -1:
+        img = img.resize(image_sizes[idx])
+
+      result_img.paste(img, (0, y_offset))
+      y_offset += (img.size[1] + img_space) # 현재 추가된 image의 높이값을 누적 + 사용자가 지정한 간격
+
+      # progress 계산(percent)
+      progress = (idx + 1) / len(images) * 100
+      p_var.set(progress)
+      progress_bar.update()
+
+    # 포맷 옵션 처리
+    file_name = "nado_photo." + img_format
+    dest_path = os.path.join(txt_dest_path.get(), file_name)
+    result_img.save(dest_path)
+    msgbox.showinfo("알림", "작업이 완료되었습니다.")
+  ```
+
+옵션 2 적용 흐름은 아래 순서로 볼 수 있다.  
+
+1. `image_sizes`를 기준으로 결과 이미지의 가로와 세로 크기를 계산한다.  
+2. 간격 옵션이 있으면 이미지 사이 개수만큼 `total_height`를 늘린다.  
+3. 결과 이미지를 만들 때 늘어난 `total_height`를 사용한다.  
+4. 가로넓이 옵션이 원본 유지가 아니면 `img.resize(image_sizes[idx])`로 실제 이미지를 리사이즈한다.  
+5. 이미지를 붙인 뒤 `img.size[1] + img_space`만큼 `y_offset`을 이동한다.  
+6. 선택한 포맷을 파일 확장자로 사용해서 결과 파일명을 만든다.  
+7. 최종 이미지를 선택한 저장 경로에 저장한다.  
 
 </details>
 <br>
