@@ -2076,3 +2076,167 @@ new_height = int(800 * 300 / 500)
 <br>
 <hr>
 <br>
+
+# 예제 13) 유틸 - 단축키 스크린샷
+## 목차
+
+1. 기존 자동 스크린샷 방식의 한계
+2. 단축키 스크린샷 유틸의 목적
+3. 필요한 모듈
+4. 스크린샷 저장 함수
+5. 단축키 등록과 프로그램 대기
+6. 전체 코드
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+이미지 병합 프로그램을 테스트하려면 병합할 샘플 이미지가 필요하다.  
+이전의 `3.auto_screenshot.py`는 일정 시간마다 자동으로 화면을 캡처했지만, 사용자가 정확히 원하는 순간을 직접 고르기는 어렵다.  
+
+`8.advanced_screenshot.py`는 사용자가 원하는 화면을 준비한 뒤, 단축키를 누르는 순간 바로 스크린샷을 저장하기 위한 유틸 프로그램이다.  
+이미지 병합용 사진을 수집할 때 필요한 순간만 빠르게 캡처할 수 있다.  
+
+## 1. 기존 자동 스크린샷 방식의 한계
+
+기존 자동 스크린샷 유틸은 5초 대기 후 2초 간격으로 10장의 이미지를 저장했다.  
+
+- [3.auto_screenshot.py](../3.auto_screenshot.py)
+  ```py
+  # 생략
+  time.sleep(5)
+
+  for i in range(1, 11):
+    img = ImageGrab.grab()
+    img.save("image{}.png".format(i))
+    time.sleep(2)
+  ```
+
+이 방식은 자동으로 여러 장을 만들 수 있다는 장점이 있다.  
+하지만 캡처 시점이 시간 간격에 의해 정해지기 때문에, 특정 버튼을 누른 직후나 원하는 화면 상태가 나타난 바로 그 순간을 잡기 어렵다.  
+
+## 2. 단축키 스크린샷 유틸의 목적
+
+단축키 방식은 사용자가 직접 캡처 시점을 결정한다.  
+프로그램을 실행해 둔 상태에서 원하는 화면이 준비되면 `F9`를 눌러 현재 화면을 저장한다.  
+
+- [8.advanced_screenshot.py](../8.advanced_screenshot.py)
+  ```py
+  # 원하는 순간에 캡쳐를 쉽고 빠르게 할 수 있는 프로그램
+  ```
+
+이 방식은 아래와 같은 경우에 유용하다.  
+
+- 이미지 병합 테스트용 샘플을 직접 수집할 때
+- 화면 상태가 빠르게 바뀌는 순간을 캡처할 때
+- 자동 캡처 간격을 기다리지 않고 필요한 장면만 저장하고 싶을 때
+- 같은 프로그램 흐름에서 여러 화면을 원하는 타이밍에 저장하고 싶을 때
+
+## 3. 필요한 모듈
+
+단축키 감지를 위해 `keyboard` 모듈을 사용하고, 화면 캡처를 위해 Pillow의 `ImageGrab`을 사용한다.  
+파일명에 현재 시간을 넣기 위해 `time` 모듈도 사용한다.  
+
+- [8.advanced_screenshot.py](../8.advanced_screenshot.py)
+  ```py
+  import keyboard # pip install keyboard
+  from PIL import ImageGrab
+  import time
+  ```
+
+`keyboard` 모듈이 설치되어 있지 않다면 현재 사용 중인 Python 환경에 설치해야 한다.  
+
+```sh
+py -3.12 -m pip install keyboard
+```
+
+Pillow가 설치되어 있지 않다면 아래 명령으로 설치한다.  
+
+```sh
+py -3.12 -m pip install pillow
+```
+
+## 4. 스크린샷 저장 함수
+
+`screenshot()` 함수는 현재 시간을 파일명에 포함해서 화면을 저장한다.  
+
+- [8.advanced_screenshot.py](../8.advanced_screenshot.py)
+  ```py
+  def screenshot():
+    curr_time = time.strftime("_%Y%m%d_%H%M%S") # 2020년 6월 1일 10시 20분 30초 → _20200601_102030
+    img = ImageGrab.grab()
+    img.save("image{}.png".format(curr_time))
+  ```
+
+`time.strftime("_%Y%m%d_%H%M%S")`는 현재 시간을 `_년월일_시분초` 형태의 문자열로 만든다.  
+예를 들어 2020년 6월 1일 10시 20분 30초라면 `_20200601_102030`이 된다.  
+
+이 값을 파일명에 붙이면 아래처럼 저장된다.  
+
+```txt
+image_20200601_102030.png
+```
+
+시간을 파일명에 넣는 이유는 스크린샷을 여러 번 찍어도 파일명이 서로 겹치지 않게 하기 위해서이다.  
+
+## 5. 단축키 등록과 프로그램 대기
+
+`keyboard.add_hotkey()`를 사용하면 특정 키를 눌렀을 때 실행할 함수를 등록할 수 있다.  
+현재 코드에서는 `F9`를 누르면 `screenshot()` 함수가 실행되도록 연결한다.  
+
+- [8.advanced_screenshot.py](../8.advanced_screenshot.py)
+  ```py
+  keyboard.add_hotkey("F9", screenshot) # 사용자가 F9 키를 누르면 스크린 샷 저장
+  ```
+
+다른 키를 단축키로 사용하고 싶다면 아래처럼 변경할 수 있다.  
+
+- [8.advanced_screenshot.py](../8.advanced_screenshot.py)
+  ```py
+  # keyboard.add_hotkey("a", screenshot) # 사용자가 A 키를 누르면 스크린 샷 저장
+  # keyboard.add_hotkey("ctrl+shift+s", screenshot) # 사용자가 ctrl+shift+s 키를 누르면 스크린 샷 저장
+  ```
+
+마지막으로 `keyboard.wait("esc")`를 호출해서 사용자가 `esc`를 누를 때까지 프로그램이 종료되지 않도록 한다.  
+
+- [8.advanced_screenshot.py](../8.advanced_screenshot.py)
+  ```py
+  keyboard.wait("esc") # 사용자가 esc를 누를때까지 프로그램 수행
+  ```
+
+프로그램 실행 흐름은 아래와 같다.  
+
+1. 프로그램을 실행한다.  
+2. 캡처하고 싶은 화면을 준비한다.  
+3. `F9`를 누르면 현재 화면이 이미지 파일로 저장된다.  
+4. 필요한 만큼 `F9`를 반복해서 누른다.  
+5. 작업이 끝나면 `esc`를 눌러 프로그램을 종료한다.  
+
+## 6. 전체 코드
+
+- [8.advanced_screenshot.py](../8.advanced_screenshot.py)
+  ```py
+  # 원하는 순간에 캡쳐를 쉽고 빠르게 할 수 있는 프로그램
+
+  import keyboard # pip install keyboard
+  from PIL import ImageGrab
+  import time
+
+  def screenshot():
+    curr_time = time.strftime("_%Y%m%d_%H%M%S") # 2020년 6월 1일 10시 20분 30초 → _20200601_102030
+    img = ImageGrab.grab()
+    img.save("image{}.png".format(curr_time))
+
+  keyboard.add_hotkey("F9", screenshot) # 사용자가 F9 키를 누르면 스크린 샷 저장
+  # keyboard.add_hotkey("a", screenshot) # 사용자가 A 키를 누르면 스크린 샷 저장
+  # keyboard.add_hotkey("ctrl+shift+s", screenshot) # 사용자가 ctrl+shift+s 키를 누르면 스크린 샷 저장
+
+  keyboard.wait("esc") # 사용자가 esc를 누를때까지 프로그램 수행
+  ```
+
+</details>
+<br>
+<hr>
+<br>
